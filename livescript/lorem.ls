@@ -8,6 +8,7 @@
   rand  = -> ~~(+it * Math.random!)
   randm = -> it[rand it.length]
   capitalize = -> "#{it.slice(0, 1)toUpperCase!}#{it.slice(1)toLowerCase!}"
+  shuffle = (array, count) -> for i from 1 to count => randm array
   try
     require! moment
   catch
@@ -20,6 +21,8 @@
     LAST_NAMES = <[Chung Chen Melton Hill Puckett Song Hamilton Bender Wagner McLaughlin McNamara Raynor Moon Woodard Desai Wallace Lawrence Griffin Dougherty Powers May Steele Teague Vick Gallagher Solomon Walsh Monroe Connolly Hawkins Middleton Goldstein Watts Johnston Weeks Wilkerson Barton Walton Hall Ross Chung Bender Woods Mangum Joseph Rosenthal Bowden Barton Underwood Jones Baker Merritt Cross Cooper Holmes Sharpe Morgan Hoyle Allen Rich Rich Grant Proctor Diaz Graham Watkins Hinton Marsh Hewitt Branch Walton O'Brien Case Watts Christensen Parks Hardin Lucas Eason Davidson Whitehead Rose Sparks Moore Pearson Rodgers Graves Scarborough Sutton Sinclair Bowman Olsen Love McLean Christian Lamb James Chandler Stout Cowan Golden Bowling Beasley Clapp Abrams Tilley Morse Boykin Sumner Cassidy Davidson Heath Blanchard McAllister McKenzie Byrne Schroeder Griffin Gross Perkins Robertson Palmer Brady Rowe Zhang Hodge Li Bowling Justice Glass Willis Hester Floyd Graves Fischer Norman Chan Hunt Byrd Lane Kaplan Heller May Jennings Hanna Locklear Holloway Jones Glover Vick O'Donnell Goldman McKenna Starr Stone McClure Watson Monroe Abbott Singer Hall Farrell Lucas Norman Atkins Monroe Robertson Sykes Reid Chandler Finch Hobbs Adkins Kinney Whitaker Alexander Conner Waters Becker Rollins Love Adkins Black Fox Hatcher Wu Lloyd Joyce Welch Matthews Chappell MacDonald Kane Butler Pickett Bowman Barton Kennedy Branch Thornton McNeill Weinstein Middleton Moss Lucas Rich Carlton Brady Schultz Nichols Harvey Stevenson Houston Dunn West O'Brien Barr Snyder Cain Heath Boswell Olsen Pittman Weiner Petersen Davis Coleman Terrell Norman Burch Weiner Parrott Henry Gray Chang McLean Eason Weeks Siegel Puckett Heath Hoyle Garrett Neal Baker Goldman Shaffer Choi Carver]>
     DELIMITERS = ['_' '-' '.' '']
     DOMAINS = <[gmail.com yahoo.com hotmail.com email.com live.com me.com mac.com aol.com fastmail.com mail.com]>
+    IMAGE_SRC = "http://placehold.it/"
+    HEX = <[a b c d e f 0 1 2 3 4 5 6 7 8 9]>
     h =
       lorem-word:
         (r) -> h.lorem-words 1, r
@@ -65,6 +68,21 @@
             username =
               h.lorem-name!replace /[^\w]/g, DELIMITERS[rand DELIMITERS.length]
             "#{username.toLowerCase!}@#{DOMAINS[rand DOMAINS.length]}"
+      lorem-image:
+        (size, options = {}) ->
+          | options.replacement => options.replacement
+          | otherwise
+            background-color = options.background-color
+            color = options.color
+            if options.random-color
+              background-color = shuffle(HEX, 6)join ''
+              color = shuffle(HEX, 6)join ''
+            src  = "#IMAGE_SRC#size"
+            src += "/#{background-color.replace /^#/, ''}" if background-color
+            src += "/ccc" if not background-color and color
+            src += "/#{color.replace /^#/, ''}" if color
+            src += "&text=#{escape options.text}" if options.text
+            src
     if moment
       h <<< do
         lorem-date:
@@ -81,30 +99,6 @@
               moment("#y #m #d", 'YYYY MM DD')format fmt
     h
 /*
-    def lorem_image(size, options={})
-      if options[:replacement]
-        options[:replacement]
-      else
-        src              = "http://placehold.it/#{size}"
-        hex              = %w[a b c d e f 0 1 2 3 4 5 6 7 8 9]
-        background_color = options[:background_color]
-        color            = options[:color]
-
-        if options[:random_color]
-          background_color = hex.shuffle[0...6].join
-          color = hex.shuffle[0...6].join
-        end
-
-        src << "/#{background_color.sub(/^#/, '')}" if background_color
-        src << "/ccc" if background_color.nil? && color
-        src << "/#{color.sub(/^#/, '')}" if color
-        src << "&text=#{h(options[:text])}" if options[:text]
-
-        src
-      end
-    end
-  end
-
   # from https://github.com/gugod/zh-lorem/blob/master/lib/zh-lorem.rb
   module ZhLoremHelpers
     def zh_lorem_name(replacement = nil)
