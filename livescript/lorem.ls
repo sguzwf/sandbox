@@ -8,6 +8,10 @@
   rand  = -> ~~(+it * Math.random!)
   randm = -> it[rand it.length]
   capitalize = -> "#{it.slice(0, 1)toUpperCase!}#{it.slice(1)toLowerCase!}"
+  try
+    require! moment
+  catch
+    console.log 'npm install moment for lorem-date()'
 
   # This module is borrowed from https://github.com/blahed/frank/blob/master/lib/frank/lorem.rb
   module.exports = LoremHelpers = let
@@ -38,19 +42,21 @@
             [1 to total]
               .map -> h.lorem-sentences randm([3 to 7]), replacement
               .join "\n\n"
-      lorem-date:
-        (
-          fmt         = '%a %b %d, %Y'
-          range       = first: 1950 last: 2010
-          replacement = null
-        ) ->
-          | replacement => replacement
-          | otherwise
-            y = rand(range.last - range.first) + range.first
-            m = rand(12) + 1
-            d = rand(31) + 1
-            # toLocaleFormat(fmt) is a non-standard method
-            new Date(y,m,d)toLocaleString!
+    if moment
+      h <<< do
+        lorem-date:
+          (
+            fmt         = 'ddd MMM DD, YYYY'
+            range       = first: 1950 last: 2010
+            replacement = null
+          ) ->
+            | replacement => replacement
+            | otherwise
+              y = rand(range.last - range.first) + range.first
+              m = rand(12) + 1
+              d = rand(31) + 1
+              moment("#y #m #d", 'YYYY MM DD')format fmt
+    h
 /*
     def lorem_name(replacement = nil)
       if replacement
