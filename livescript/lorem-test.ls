@@ -17,3 +17,4 @@ console
   ..log Chinese.zh-lorem-name!
   ..log Chinese.zh-lorem-name-pinyin!
   ..log Chinese.zh-lorem-email!
+  ..log Chinese.zh-lorem-words 20
