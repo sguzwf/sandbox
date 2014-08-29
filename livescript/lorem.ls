@@ -186,57 +186,39 @@ ZhLoremHelpers = let
         | otherwise
           Array::join.call _, '' <| for i from 1 to total
             randm randm(SENTENCES[rand 3])sortSurrogates!slice(0, -1)
+    lorem-sentence:
+      (r) ->
+        | r         => r
+        | otherwise
+          out = ''
+          while 1 is rand 2
+            out += randm SENTENCES.0
+          out += randm SENTENCES[1 + rand 2]
+          out
+    lorem-sentences:
+      (total, r) -> [1 to total]map (-> h.lorem-sentence r) .join ''
+    lorem-paragraph:
+      (r) ->
+        | r         => r
+        | otherwise => h.lorem-paragraphs 1, r
+    lorem-paragraphs:
+      (total, r) ->
+        | r         => r
+        | otherwise
+          [1 to total]map (-> h.lorem-sentences randm([3 to 7]), r) .join "\n\n"
+JpLoremHelpers = let
+  FIRST_NAME = <[明 久美子 聖人 愛子 昭夫 明日香 大地 綾子 大輔 千夏 五郎 恵美 八郎 春 陽生 陽子 陽斗 悦子 隼人 光 英明 陽菜 秀樹 仁美 輝 星子 一郎 蛍 宏 博子 勇 泉 二郎 純子 潤 香織 堅 霞 海斗 薫 和夫 和枝 和樹 敬子 健一 清子 賢治 喜久子 浩太 京子 誠 舞 勝 真美 正雄 惠 直樹 澪 信孝 美咲 信夫 森子 修 奈々 陸 直美 涼 蘭 良一 玲子 亮太 典子 蓮 早希 龍 里美 龍太郎 幸子 新一 小百合 忍 詩織 四郎 静香 翔 節子 真 貴子 翔太 澄子 空 富子 巧 智子 智 友美 雄彦 椿 太一 梅 武 良子 吉 陽子 大和 吉江 悠人]>
+  h =
+    lorem-name:
+      (r) ->
+        | r         => r
+        | otherwise => ...
 module.exports =
   en: LoremHelpers
   zh: ZhLoremHelpers
+  jp: JpLoremHelpers
 /*
 # from https://github.com/gugod/zh-lorem/blob/master/lib/zh-lorem.rb
-module ZhLoremHelpers
-  def zh_lorem_sentence(replacement = nil)
-    if replacement
-      return replacement
-    end
-
-    out = ""
-    while(rand(2) == 1)
-      out += random_one(SENTENCES[0])
-    end
-    out += random_one(SENTENCES[1+rand(2)])
-  end
-
-
-  def zh_lorem_sentences(total, replacement = nil)
-    out = ""
-    (1..total).map { zh_lorem_sentence(replacement) }.join("")
-  end
-
-  def zh_lorem_paragraph(replacement = nil)
-    if replacement
-      return replacement
-    end
-
-    return zh_lorem_paragraphs(1, replacement)
-  end
-
-  def zh_lorem_paragraphs(total, replacement = nil)
-    if replacement
-      return replacement
-    end
-
-    (1..total).map do
-      zh_lorem_sentences(random_one(3..7), replacement)
-    end.join("\n\n")
-  end
-
-  private
-
-  def random_one(arr)
-    return arr.to_a[ rand(arr.to_a.size) ]
-  end
-end
-
-#from https://github.com/miau715/jp-lorem-helpers-demo/blob/master/view_helpers.rb
-#forked from https://github.com/gugod/zh-lorem/blob/master/lib/zh-lorem.rb
 module JpLoremHelpers
   def jp_lorem_name(replacement = nil)
     if replacement

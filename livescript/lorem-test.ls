@@ -18,3 +18,8 @@ console
   ..log zh.lorem-name-pinyin!
   ..log zh.lorem-email!
   ..log zh.lorem-words 20
+  ..log zh.lorem-sentence!
+  ..log zh.lorem-sentences 2
+  ..log zh.lorem-paragraphs 2
+  # JpLoremHelpers
+  ..log jp.lorem-name!
