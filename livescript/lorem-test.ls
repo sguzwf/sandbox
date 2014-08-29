@@ -23,3 +23,9 @@ console
   ..log zh.lorem-paragraphs 2
   # JpLoremHelpers
   ..log jp.lorem-name!
+  ..log jp.lorem-name-en!
+  ..log jp.lorem-email!
+  ..log jp.lorem-words 20
+  ..log jp.lorem-sentence!
+  ..log jp.lorem-sentences 2
+  ..log jp.lorem-paragraphs 2
