@@ -1,20 +1,20 @@
-{English, Chinese, Japanese} = require './lorem'
+{en, zh, jp} = require './lorem'
 
 console
   # LoremHelpers
-  ..log English.lorem-words 2
-  ..log English.lorem-sentences 2
-  ..log English.lorem-paragraphs 2
-  ..log English.lorem-name!
-  ..log English.lorem-email!
-  ..log English.lorem-image '350x150'
-  ..log English.lorem-image '350x150' random-color: true
-  ..log English.lorem-image '350x150' background-color: '#16161D'
-  ..log English.lorem-image '350x150' color: '#F90'
-  ..log English.lorem-image '350x150' text: '<not-a-tag/>'
-  ..log English.lorem-date?!
+  ..log en.lorem-words 2
+  ..log en.lorem-sentences 2
+  ..log en.lorem-paragraphs 2
+  ..log en.lorem-name!
+  ..log en.lorem-email!
+  ..log en.lorem-image '350x150'
+  ..log en.lorem-image '350x150' random-color: true
+  ..log en.lorem-image '350x150' background-color: '#16161D'
+  ..log en.lorem-image '350x150' color: '#F90'
+  ..log en.lorem-image '350x150' text: '<not-a-tag/>'
+  ..log en.lorem-date?!
   # ZhLoremHelpers
-  ..log Chinese.zh-lorem-name!
-  ..log Chinese.zh-lorem-name-pinyin!
-  ..log Chinese.zh-lorem-email!
-  ..log Chinese.zh-lorem-words 20
+  ..log zh.lorem-name!
+  ..log zh.lorem-name-pinyin!
+  ..log zh.lorem-email!
+  ..log zh.lorem-words 20

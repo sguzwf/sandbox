@@ -132,15 +132,15 @@ ZhLoremHelpers = let
     * ["一層層堆聚起來。","不停地前進。","不可讓他佔便宜。","不教臉紅而已。","不知橫亙到何處。","丙可憐似的說。","也須為著子孫鬥爭。","互相提攜走向前去。","亦不算壞。","人類的一分子了。","今夜是明月的良宵。","他正在發瘋呢。","何用自作麻煩。","何須非議。","便把眼皮睜開。","兩方就各答應了。","再鬧一回亦好。","分辨出浩蕩的溪聲。","卻自奉行唯謹。","又一人說。","和他們做新過年。","和鍛鍊團結力。","因為不高興了。","在表示著歡迎。","在閃爍地放亮。","地方領導人。","坐著閒談。","多有一百倍以上。","奏起悲壯的進行曲。","嬉嬉譁譁地跑去了。","將要千圓。","導發反抗力的火戰。","就再開始。","就和解去。","就在明后兩天。","就是金錢。","已像將到黎明之前。","已無暇計較。","忘卻了一切。","怎麼就十五年了。","愈會碰著痛苦。","我去拿一面鑼來。","捲下中街去。","是算不上什麼。","有些多事的人問。","有人詰責似的問。","本來是橫逆不過的。","本該挨罵。","漏射到地上。","為著前進而前進。","甲哈哈地笑著說。","甲總不平地罵。","看看又要到了。","眼睛已失了作用。","神所厭棄本無價值。","移動自己的腳步。","終也渡過彼岸。","終是不可解的疑問。","繞來穿去。","繼續他們的行程。","老人懷疑地問。","街上實在繁榮極了。","街上的孩子們在喊。","被逐的前人之子。","說得很高興似的。","這原因就不容妄測。","運行了一個週環。","那就....。","那痛苦就更難堪了。","那邊比較鬧熱。","險些兒跌倒。","黃金難買少年心。","下了10顆。","也可以回答不喜歡。","以及麻醉劑。","以後再也不亂玩了。","以後少喝咖啡。","你喜歡就都給你。","出門買咖啡。","去煮水餃。","台北市信義區2級。","咖啡早冷了。","咖啡要做我老友。","喝杯咖啡。","好幾個月了。","就是很需要咖啡因。","就是戒不掉。","就會想過去喝一杯。","很好判斷一個人。","心情真的很差。","恩～不賴。","感覺挺傻的。","所幸暫無災情傳出。","早餐機投入使用。","暫時的時空靜止。","最適合中國人。","會讓我撐到幾時。","有死傷…QQ。","水☆餃☆子。","煮水餃ing。","真的很有用。","短褲短袖。","等一個人咖啡。","胃又疼了。","要開始了。","都有可能。","雪可屋的特調咖啡。","頂部放上奶油。"]
     * ["一樣是歹命人！","但是這一番啊！","來--來！","來和他們一拚！","值得說什麼爭麵皮！","兄弟們來！","到城裡去啊！","又受了他們一頓罵！","和他們一拚！","實在想不到！","憑這一身！","憑這雙腕！","我要頂禮他啊！","把我們龍頭割去！","捨此一身和他一拚！","明夜沒得再看啦！","歲月真容易過！","比狗還輸！","無目的地前進！","甘失掉了麵皮！","盲目地前進！","老不死的混蛋！","趕快走下山去！","這是如何地悲悽！","這是如何的決意！","那纔利害啦！","也不上你的甜！","幫忙打掃整理家裡！","我的爸媽！","是鬧哪樣啊！","有沒有人要揪團！","有點疲憊！","真的太好吃了啦！","葡萄柚最棒了！","２２８運去台中！"]
   h =
-    zh-lorem-name:
+    lorem-name:
       (r) ->
         | r         => r
-        | otherwise => h.zh-lorem-last-name! + h.zh-lorem-first-name!
-    zh-lorem-name-pinyin:
+        | otherwise => h.lorem-last-name! + h.lorem-first-name!
+    lorem-name-pinyin:
       (r) ->
         | r         => r
         | otherwise
-          h.zh-lorem-first-name-pinyin! + " " + h.zh-lorem-last-name-pinyin!
+          h.lorem-first-name-pinyin! + " " + h.lorem-last-name-pinyin!
     ###
     # 2012 全國姓名統計
     # http://www.moi.gov.tw/print.aspx?print=news&sn=6854&type_code=02
@@ -148,47 +148,47 @@ ZhLoremHelpers = let
     # 內政部進一步指出，全國取用單名人口數為419,846人，其中男性為178,546人，以取
     # 用傑、明、杰、毅、平、偉、翔、文、威、正最常見；女性為241,300人，以取用敏
     # 、梅、雪、滿、玉、美、秀、菊、靜、婷最常見，顯示女性取單名者較多。
-    zh-lorem-first-name:
+    lorem-first-name:
       (r) ->
         | r         => r
         | otherwise
           "#{randm FIRST_NAME}#{if 18 > rand 1000 then '' else randm FIRST_NAME}"
-    zh-lorem-first-name-pinyin:
+    lorem-first-name-pinyin:
       (r) ->
         | r         => r
         | otherwise
           randm(FIRST_NAME_PINYIN) +
           if 18 > rand 1000 then '' else randm(FIRST_NAME_PINYIN)toLowerCase!
-    zh-lorem-last-name:
+    lorem-last-name:
       (r) ->
         | r         => r
         | otherwise => randm LAST_NAME
-    zh-lorem-last-name-pinyin:
+    lorem-last-name-pinyin:
       (r) ->
         | r         => r
         | otherwise => randm LAST_NAME_PINYIN
-    zh-lorem-email:
+    lorem-email:
       (r) ->
         | r         => r
         | otherwise
           username =
-            h.zh-lorem-first-name-pinyin! +
+            h.lorem-first-name-pinyin! +
             randm(DELIMITERS) +
-            h.zh-lorem-last-name-pinyin!
+            h.lorem-last-name-pinyin!
           "#{username.toLowerCase!}@#{randm DOMAINS}"
-    zh-lorem-word:
+    lorem-word:
       (r) ->
         | r         => r
-        | otherwise => h.zh-lorem-words 1, r
-    zh-lorem-words:
+        | otherwise => h.lorem-words 1, r
+    lorem-words:
       (total, r) ->
         | r         => r
         | otherwise
           Array::join.call _, '' <| for i from 1 to total
             randm randm(SENTENCES[rand 3])sortSurrogates!slice(0, -1)
 module.exports =
-  English: LoremHelpers
-  Chinese: ZhLoremHelpers
+  en: LoremHelpers
+  zh: ZhLoremHelpers
 /*
 # from https://github.com/gugod/zh-lorem/blob/master/lib/zh-lorem.rb
 module ZhLoremHelpers
