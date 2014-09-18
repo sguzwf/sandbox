@@ -24,7 +24,6 @@ solved = {}
 depth = 0
 
 while todos.length isnt 0
-  console.log "depth: #depth, #{todos.length}"
   todos-next = []
   for [board, pos, ans] in todos
     prev = board.pop!
