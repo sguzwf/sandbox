@@ -1,7 +1,7 @@
 #!/usr/bin/env lsc
-DataURI           = require 'datauri'
-Base64            = require 'base64-js'
-{arrayFromBase64} = require './base64'
+DataURI = require 'datauri'
+Base64  = require 'base64-js'
+{arrayFromBase64, base64FromArray} = require './base64'
 require! atob
 require! fs
 
@@ -18,4 +18,6 @@ fs.writeFile './assets/beatgammit.mp3', r
 
 r = new Buffer arrayFromBase64 data.base64
 console.log "homebrew: #{r.length}"
+console.log data.base64.substring 0, 10
+console.log base64FromArray(arrayFromBase64(data.base64))substring 0, 10
 fs.writeFile './assets/homebrew.mp3', r

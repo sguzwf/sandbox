@@ -40,4 +40,26 @@ arrayFromBase64 = ->
     result.pop!
   result
 
-module.exports = {uint6FromBase64, base64FromUint6, arrayFromBase64}
+base64FromArray = ->
+  result = []
+  s = []
+  while it.length
+    v = 0
+    c = it.pop!
+    v .|.= c << 16
+    padding = 0
+    if c = it.pop!
+      then v .|.= c << 8
+      else padding = 1
+    if c = it.pop!
+      then v .|.= c
+      else padding = 2
+    for from 0 til 4
+      s.push base64FromUint6(v .&. 0x3F)
+      v .>>.= 6
+    while s.length
+      result.push s.pop!
+  result.join ''
+
+module.exports =
+  { uint6FromBase64, base64FromUint6, arrayFromBase64, base64FromArray }
