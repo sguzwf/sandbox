@@ -1,3 +1,5 @@
+#!/usr/bin/env lsc
+
 /*
 # React 社群小聚 3 - Notes
 
@@ -34,7 +36,10 @@ require! {
   * 希望開跟不開 JavaScript 的結果是一樣的。（Isomorphic）
   * Progressive Enhancement!
   * 兩邊都要是 React render 出來的 HTML 才能成功 mount 喔！
-  * 兩邊的 object 也要一樣。（是指 props 嗎？）
+  * 兩邊的 object 也要一樣。
+
+是指 props 嗎？）
+
   * 整個 browsify ，沒有 minify 大概 1Mb ，然後整個站只要送 AJAX 就好。
   * 還在學 Flux 。
   * 希望可以跟 web component 看齊，這樣用什麼 framework 都能 reuse components 。
@@ -64,6 +69,49 @@ Cue = React.createClass do
         @props.children #######
 Cue = React.createFactory Cue
 
+/*
+## LY
+
+  * 寫 node 前是寫 PHP 的（笑）。
+  * 兩個問題：
+    * client side performance
+    * SEO
+  * 比較好支援 IE8 。
+  * 有個不會用 Photoshop 但是寫得一手好 Angular 的設計師。
+  * Angular 竟然淪落到作 markup （眾笑）。
+
+不要一直捅自己的市長給問啊啊啊啊啊。
+
+  * 模仿一個 app 。
+  * 跟 Inbox 致敬。
+  * 做得很漂亮，表示抄得很像（眾笑）。
+  * 用 express ，分兩部分， API 和 render 。
+  * client first 變成 component first 。
+
+不知道對解決 component reuse 問題，有什麼想法？
+LY: 可能被迫還是要 page-based 。永久的 uri ...。加上還有 CSS 的問題。不過還是覺得要往 component-based 發展啦。
+
+  * es5-shim for IE8
+
+vminpoly 也能很方便的接上去。
+
+  * Flux
+  * react-router
+
+也好想找機會寫寫看 Flux 。
+
+  * superagent
+  * Auth: getToken
+    * express-session
+    * passport-session
+
+LY 你人太好了。（還在捅自己的市長給問）
+
+  * Dockerfile
+  * ES6
+
+*/
+
 App = React.createClass do
   displayName: 'App'
   render: ->
@@ -80,17 +128,19 @@ App = React.createClass do
 App = React.createFactory App
 
 tidy do
-  React.renderToStaticMarkup App!
+  React.renderToString App!
   { indent: on }
   console.log
 
-###
-# Notes
-###
-# Fullstack Rocks 的教育訓練， 280k ：
-# http://www.fullstackrocks.com/course-react/
-#
-# 另外記得私下問一下，能不能去上這個：
-# https://plus.google.com/+TataChen/posts/427He2vXHQA
-#
-# 原來已經有十二個人，也就是大約二十分之一在寫 Isomorphic JavaScript 了。
+/*
+## Notes
+
+  * Fullstack Rocks 的教育訓練， 280k ：
+    http://www.fullstackrocks.com/course-react/
+
+  * 另外記得私下問一下，能不能去上這個：
+    https://plus.google.com/+TataChen/posts/427He2vXHQA
+
+原來已經有十二個人，也就是大約二十分之一在寫 Isomorphic JavaScript 了。
+
+*/
