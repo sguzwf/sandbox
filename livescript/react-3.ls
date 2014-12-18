@@ -127,6 +127,43 @@ App = React.createClass do
         '大野狼'
 App = React.createFactory App
 
+/*
+# TonyQ
+
+slide: http://slides.com/tonyq/jsconfasia-intro#/
+
+  * 那美克星要爆炸了，還有六集可以逃。
+  * 主題還是會以 JSConf Asia 為主。
+  * 要辦 JSConf 得 follow 一些 guideline ，所以台灣先辦自己的 JSDC 。
+  * 控制人數，不會太多人。
+  * SVG
+  * CSSConf
+    * Airbnb 重構整個品牌的故事。
+      * 一鍵切換兩組 theme 。除了 dashboard 。
+      * 三個月。
+    * CSS3DRender
+    * Flex 垂直置中。
+      * 八九種不同 cases 。
+    * Black Magic
+  * JSConf 2014
+    * Isomorphic
+    * PixelArt
+    * Bad Form
+    * Sensor Game
+      * 用的是 Firefox OS Phone 。
+    * 很多題目都是 'Why not?'
+    * [WebTorrent](https://github.com/feross/webtorrent)
+    * [dat](https://github.com/maxogden/dat)
+    * phaser.io
+    * node school
+      * 走出家裡，參加或發起 community 。
+
+比較一下 dat 和 [CASC](https://gist.github.com/galedric/b34f14dd93381498a7a1) 。
+
+  * 前端要玩的太多，那就玩命吧 XD
+
+*/
+
 tidy do
   React.renderToString App!
   { indent: on }
