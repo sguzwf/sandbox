@@ -1,3 +1,4 @@
+#!/usr/bin/env lsc
 powerset = ([x, ...xs]) ->
   | not x     => [[]]
   | otherwise => let ys = powerset xs => ys ++ [[x] ++ .. for ys]

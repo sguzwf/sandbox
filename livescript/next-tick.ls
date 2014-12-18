@@ -5,7 +5,8 @@ done = false
 
 f = !->
   count := count + 1
-  setImmediate f if not done
+  console.log count
+  setImmediate f if not done # blocked
 
 request 'http://caasigd.org/' !->
   console.log count, \done

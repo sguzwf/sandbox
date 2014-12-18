@@ -1,3 +1,5 @@
+{ div, h3, textarea } = React.DOM
+
 converter = new Showdown.converter
 
 MarkdownEditor = React.createClass do
@@ -7,18 +9,19 @@ MarkdownEditor = React.createClass do
   handleChange: !->
     @setState value: @refs.textarea.getDOMNode!value
   render: ->
-    React.DOM.div do
+    div do
       className: \MarkdownEditor
-      React.DOM.h3 null, \Input
-      React.DOM.textarea do
+      h3 {} \Input
+      textarea do
         onChange: @handleChange
         ref: \textarea
         defaultValue: @state.value
-      React.DOM.h3 null, \Output
-      React.DOM.div do
+      h3 {} \Output
+      div do
         className: \content
         dangerouslySetInnerHTML:
           __html: converter.makeHtml @state.value
+MarkdownEditor = React.createFactory MarkdownEditor
 
-React.renderComponent MarkdownEditor!, mountNode
+React.render MarkdownEditor!, mountNode
 
