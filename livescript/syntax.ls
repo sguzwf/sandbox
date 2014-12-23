@@ -13,7 +13,7 @@ segment = (str, parts = []) ->
     parts.push do
       text: r.0
       actived: true
-    lastIndex = r.index + r.0.length
+    lastIndex = re.lastIndex
   if lastIndex isnt str.length
     parts.push do
       text: str.substring lastIndex
