@@ -1,7 +1,10 @@
 #!/usr/bin/env lsc
 require! {
-  rsvp: { Promise }
+  rsvp: { Promise, all }:RSVP
+  'prelude-ls': { apply }
 }
+
+RSVP.on \error -> console.log ...
 
 get = (p, cb) -> p.then cb
 
@@ -29,3 +32,10 @@ do
   b <- get pb
   console.log "#a #b"
 
+# a little implict
+p       = -> Promise.resolve it
+promisy = (f) -> (...args) -> all args .then (args) -> apply f, args
+add     = promisy (+)
+log     = promisy console.log
+
+log add 41, p(43)
