@@ -39,3 +39,25 @@ add     = promisy (+)
 log     = promisy console.log
 
 log add 41, p(43)
+
+# more usages for you
+class People
+  (@_name, @_friend) ~>
+  name: ->
+    that = this
+    new Promise (resolve, reject) ->
+      setTimeout (-> resolve that._name), 500
+  friend: ->
+    that = this
+    new Promise (resolve, reject) ->
+      setTimeout (-> resolve that._friend), 500
+var opal
+ruby = People \ruby
+opal = People \opal, ruby
+ruby._friend = opal
+
+ruby.friend!
+  .then (friend)            -> friend.friend!
+  .then (friend)            -> friend.name!
+  .then (name)              -> all [name, ruby.name!]
+  .then ([ name, my-name ]) -> console.log name, my-name
