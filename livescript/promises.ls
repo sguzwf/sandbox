@@ -56,8 +56,12 @@ ruby = People \ruby
 opal = People \opal, ruby
 ruby._friend = opal
 
-ruby.friend!
-  .then (friend)            -> friend.friend!
-  .then (friend)            -> friend.name!
-  .then (name)              -> all [name, ruby.name!]
-  .then ([ name, my-name ]) -> console.log name, my-name
+start-time = Date.now!
+all [
+  Promise.resolve ruby
+    .then (.friend!)
+    .then (.friend!)
+    .then (.name!)
+  ruby.name!
+] .then (names) ->
+  console.log names.0, names.1, (Date.now! - start-time)
