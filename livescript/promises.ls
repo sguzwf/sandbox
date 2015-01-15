@@ -1,17 +1,22 @@
 #!/usr/bin/env lsc
 require! {
-  rsvp: { Promise, all }:RSVP
-  'prelude-ls': { apply }
+  rsvp: { Promise, all, hash }:RSVP
+  'prelude-ls': { apply, is-type }
 }
 
 RSVP.on \error -> console.log ...
 
-wrap    = -> if Array.isArray it then all it else Promise.resolve it
+wrap = ->
+  switch
+  | it |> is-type 'Array'  => all it
+  | it |> is-type 'Object' => hash it
+  | otherwise              => Promise.resolve it
 p       = -> Promise.resolve it
-promisy = (f) -> (...args) -> wrap args .then (args) -> wrap apply f, args
+promisy = (f) -> (...args) -> wrap args .then (args) -> wrap f `apply` args
 log     = promisy console.log
 add     = promisy (+)
 
+log p(41), 43
 log add 41, p(43)
 
 # begin
@@ -43,26 +48,26 @@ do
 
 # more usages for you
 class People
-  (@_name, @_friend) ~>
-  name: ->
-    that = this
-    new Promise (resolve, reject) ->
-      setTimeout (-> resolve that._name), 300
-  friend: ->
-    that = this
-    new Promise (resolve, reject) ->
-      setTimeout (-> resolve that._friend), 300
+  (@name_, @friend_) ~>
+  name:~
+    -> new Promise (resolve, reject) ~>
+      (~> resolve @name_) `setTimeout` 300
+    (v) -> @name_ = v
+  friend:~
+    -> new Promise (resolve, reject) ~>
+      (~> resolve @friend_) `setTimeout` 300
+    (v) -> @friend_ = v
 var opal
 ruby = People \ruby
 opal = People \opal, ruby
-ruby._friend = opal
+ruby.friend = opal
 
 start-time = Date.now!
 ps =
   * Promise.resolve ruby
-      .then (.friend!)
-      .then (.friend!)
-      .then (.name!)
-  * ruby.name!
+      .then (.friend)
+      .then (.friend)
+      .then (.name)
+  * ruby.name
 apply log, ps
 all ps .then -> console.log Date.now! - start-time
