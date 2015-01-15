@@ -6,6 +6,15 @@ require! {
 
 RSVP.on \error -> console.log ...
 
+wrap    = -> if Array.isArray it then all it else Promise.resolve it
+p       = -> Promise.resolve it
+promisy = (f) -> (...args) -> wrap args .then (args) -> wrap apply f, args
+log     = promisy console.log
+add     = promisy (+)
+
+log add 41, p(43)
+
+# begin
 get = (p, cb) -> p.then cb
 
 pa = new Promise (resolve, reject) ->
@@ -32,36 +41,28 @@ do
   b <- get pb
   console.log "#a #b"
 
-# a little implict
-p       = -> Promise.resolve it
-promisy = (f) -> (...args) -> all args .then (args) -> apply f, args
-add     = promisy (+)
-log     = promisy console.log
-
-log add 41, p(43)
-
 # more usages for you
 class People
   (@_name, @_friend) ~>
   name: ->
     that = this
     new Promise (resolve, reject) ->
-      setTimeout (-> resolve that._name), 500
+      setTimeout (-> resolve that._name), 300
   friend: ->
     that = this
     new Promise (resolve, reject) ->
-      setTimeout (-> resolve that._friend), 500
+      setTimeout (-> resolve that._friend), 300
 var opal
 ruby = People \ruby
 opal = People \opal, ruby
 ruby._friend = opal
 
 start-time = Date.now!
-all [
-  Promise.resolve ruby
-    .then (.friend!)
-    .then (.friend!)
-    .then (.name!)
-  ruby.name!
-] .then (names) ->
-  console.log names.0, names.1, (Date.now! - start-time)
+ps =
+  * Promise.resolve ruby
+      .then (.friend!)
+      .then (.friend!)
+      .then (.name!)
+  * ruby.name!
+apply log, ps
+all ps .then -> console.log Date.now! - start-time
