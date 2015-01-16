@@ -1,7 +1,7 @@
 #!/usr/bin/env lsc
 require! {
   request
-  rsvp: { Promise: P, all, hash }:RSVP
+  rsvp: { Promise: P, all }:RSVP
   'prelude-ls': { is-type, apply, map }
 }
 
@@ -11,17 +11,20 @@ RSVP.on \error console.log
 # Utils
 is-promise = -> it?then
 
+/*
 Promise = ->
   switch it
   | is-type 'Array'  it => all it
   | is-type 'Object' it => hash it
   | is-promise it       => it
   | otherwise           => P.resolve it
+*/
 
 # not exactly a Functor
+# data Promise a = a | Promise a
 # instance Functor Promise where
 # fmap :: (Functor Promise) => (a -> b) -> (Promise a -> Promise b)
-fmap = (f) -> (...args) -> all args .then (args) -> Promise f `apply` args
+fmap = (f) -> (...args) -> all args .then (args) -> f `apply` args
 
 ###
 # Functions
