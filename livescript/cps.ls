@@ -2,14 +2,14 @@
 require! {
   request
   rsvp: { Promise: P, all, hash }:RSVP
-  'prelude-ls': { is-type, apply }
+  'prelude-ls': { is-type, apply, map }
 }
 
 RSVP.on \error console.log
 
 ###
 # Utils
-is-promise = -> it?then and it?catch
+is-promise = -> it?then
 
 Promise = ->
   switch it
@@ -19,7 +19,8 @@ Promise = ->
   | otherwise           => P.resolve it
 
 # not exactly a Functor
-# fmap :: Functor Promise  => (a -> b) -> (Promise a -> Promise b)
+# instance Functor Promise where
+# fmap :: (Functor Promise) => (a -> b) -> (Promise a -> Promise b)
 fmap = (f) -> (...args) -> all args .then (args) -> Promise f `apply` args
 
 ###
@@ -40,8 +41,13 @@ now = fmap (time = 0) -> Date.now! - time
 
 ###
 # Main
-log 'sequential', now delay delay now!
-log delay('para'), delay('llel')
+log do
+  'sequential'
+  now! |> delay |> delay |> now
+log do
+  'parallel'
+  now! |> delay |> now
+  now! |> delay |> now
 
 chars = <[遙 望 暖 毛 毛]>
 log `apply` chars
