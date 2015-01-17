@@ -12,7 +12,7 @@ wrap = ->
   | it |> is-type 'Object' => hash it
   | otherwise              => Promise.resolve it
 p       = -> Promise.resolve it
-promisy = (f) -> (...args) -> all args .then (args) -> wrap f `apply` args
+promisy = (f) -> (...args) -> all args .then apply f
 log     = promisy console.log
 add     = promisy (+)
 

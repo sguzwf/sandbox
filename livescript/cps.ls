@@ -24,7 +24,7 @@ Promise = ->
 # data Promise a = a | Promise a
 # instance Functor Promise where
 # fmap :: (Functor Promise) => (a -> b) -> (Promise a -> Promise b)
-fmap = (f) -> (...args) -> all args .then (args) -> f `apply` args
+fmap = (f) -> (...args) -> all args .then apply f
 
 ###
 # Functions
