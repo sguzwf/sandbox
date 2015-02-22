@@ -1,0 +1,58 @@
+Linked List
+
+List operations:
+	Add
+	Remove
+	Rename:)
+	Merge
+		many lists by its name(Ex. Merge 1,3,2)
+
+Node Operations:
+	Insert
+		one
+		many
+	Delete
+		All
+			free(lastone)~free(firstone);
+			but do not free(head);
+		one
+			linked Next and Previous
+			free Current 
+		From this to that
+			free this one
+			Current++
+	Count
+		All
+			CurrentPtr = head;
+			until CurrentPtr->Nextnode = NULL counter++
+		Before this node
+			CurrentPtr = head;
+			until CurrentPtr->Nextnode = selected
+		After this node
+			CurrentPtr = selected
+	Search
+		An value
+			if current->data!=value
+			current = current->NextPtr
+2		many value
+			search one value
+			remember the Ptr that function returned.
+	Reverse
+		All
+		Before this node
+		After this node
+
+	Split
+2		into two lists
+		
+UI:
+	Print List
+		Print All
+		Print select List
+		Print all List Name
+	Asking Request
+		those Operations
+		Exit(Warrning, this will free all list)
+	Select Node
+		Use number to select
+		Use arrow key to select
