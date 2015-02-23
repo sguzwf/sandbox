@@ -1,0 +1,119 @@
+
+John Tom Mary Tiger-Woods Smith Victor word word WORD
+fish Tiger bear dog birds cat deer tiger
+snoopy tweety tiger cat nemo tiger lion fish
+superman batman Smith Tom.Cruise 007
+doggy T-Rex birds Tom fish guppy
+Victor Smith Tiger-Woods Mary Tom John
+
+John Tom Mary Tiger-Woods Smith Victor word
+fish Tiger bear dog birds cat deer tiger
+snoopy tweety tiger cat nemo tiger lion fish
+superman batman Smith Tom.Cruise 007
+doggy T-Rex birds Tom fish guppy
+Victor Smith Tiger-Woods Mary Tom John
+
+John Tom Mary Tiger-Woods Smith Victor word Wrong
+fish Tiger bear dog birds cat deer tiger
+snoopy tweety tiger cat nemo tiger lion fish
+superman batman Smith Tom.Cruise 007
+doggy T-Rex birds Tom fish guppy
+Victor Smith Tiger-Woods Mary Tom John
+John Tom Mary Tiger-Woods Smith Victor aaa aaaaaaaaaaaaaaaa
+fish Tiger bear dog birds cat deer tiger
+snoopy tweety tiger cat nemo tiger lion fish
+superman batman Smith Tom.Cruise 007
+doggy T-Rex birds Tom fish guppy
+Victor Smith Tiger-Woods Mary Tom John
+
+abc TOM Tom aaa
+Tom ABC Abc
+
+Tom
+Tom ABC Abc
+
+
+
+Tom ABC Abc
+
+TOM ABC
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc
+<空的集合>
+abc TOM
+abc TOM
+<空的集合>
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+John Tom Mary Tiger-Woods Smith Victor
+fish Tiger bear dog birds cat deer tiger
+snoopy tweety tiger cat nemo lion fish
+superman batman Smith Tom.Cruise 007
+doggy T-Rex birds Tom fish guppy
+Victor Smith Tiger-Woods Mary Tom John
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM
+Tom ABC
+
+abc TOM mumu
+Tom ABC
+123
+321 234 1 2 3
+
+Kuanling is not a good student
+nor a good programmer
+and he is not a good man
+黃冠霖 不是 一個 好學生
+也 不是 一個 好程式設計者
+他 也 不是 一個 好人
+
+Kuanling is not a good student 1
+nor a good programmer
+and he is not a good man
+黃冠霖 不是 一個 好學生
+也 不是 一個 好程式設計者
+他 也 不是 一個 好人
+
+Kuanling is not a good student 1
+nor a good programmer
+and he is not a good man
+黃冠霖 不是 一個 好學生 4
+也 不是 一個 好程式設計者
+他 也 不是 一個 好人
+

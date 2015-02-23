@@ -1,0 +1,152 @@
+HW2 -- Homework 2
+
+by F74926735
+黃冠霖
+
+A.Source Code 說明
+	1.class Set
+	2.class UI
+	3.hw2.cpp
+	4.other files
+B.設計流程
+	1.主架構
+	2.輸入/輸出
+	3.Set
+	4.使用者介面
+C.心得討論
+
+A.Source Code 說明
+	1.class Set
+
+class Set{
+public:
+	Set(char *filename);
+這是一個特別的Constructor，在宣告Set時，如果加上檔案名稱，他會把開啟那個檔案，並且把檔案中的每一行，分配給新產生的Set。要注意的是，這個Set只是用來導出其他有存元素的Set，自己本身並沒有存任何的元素，而由他產生的Set，會被紀錄在static Set::list[]中，等待之後的利用。
+	Set();
+這是普通的Construcor，在平常宣告Set時，他會做一些簡單的歸零動作，多半是被上面的Constructor所生的Set使用。
+	~Set();
+這是一個Destructor，在Set被delete時，會把Set中所存的資料，寫到指定名稱（output.txt）的檔案中，要是檔案不存在，他會生一個新的，要是存在，就會在尾端寫入。
+	void put();
+這是用來把特殊的Construcor，從檔案中吃進來的資料，切割成元素，存到Set中的method。
+	void add(char*);
+這是用來加入元素用的method，會判斷是否為同一個字，和Set::lower()配合，則可以判斷不分大小寫的同一個字。只要是要加入元素的行為，都會用到他。
+	void remove(char*);
+這是用來移除一個元素的method，他還不會分大小寫，所以您要鍵入正確的大小寫，才會把Set中的元素移除。
+	void show();
+這是用來把Set中的元素列成一行的method，要注意的是，他只會列出元素，要在前面加上是那一個Set的標記，還得藉由外界的其他東西來達成。
+
+	char* lower(char*);
+這是用來判別大小寫的method，他會把收到一個字串，然後傳回此字串的全小寫版本（但是不會蓋掉原本的字串），藉此你可以用來和其他的字串在平等的條件下比較，又不影響本來的字串值。
+	
+	void INTERSECT(Set*);
+這是做聯集的method，內容其實是檢查大小寫，比較字串，和加入字串的組合。
+	void UNION(Set*);
+這是做交集的method，內容其實是檢查大小寫，比較字串，和加入字串的組合。
+	void SUBTRACT(Set*);
+這是做差集的method，內容其實是檢查大小寫，比較字串，聯集，和移除字串的組合。
+以上三者，都會生成新的Set。
+
+	static char temp[MAX_LINE_CHAR];
+這是屬於Set這個class的值，用來存從檔案中讀進來的一行字。
+	static int now_Set;
+這是屬於Set這個class的值，用來存現在有多少Set存在。
+	static Set* list[MAX_SET_NUM];
+這是屬於Set這個class的值，用來存存在的Set位置。
+private:
+	int now_element;
+這是用來表示現在Set中第幾個元素是空的（用了幾個元素）
+	char data[MAX_ELEMENT_NUM][MAX_ELEMENT_LENGTH];
+這是用來存一個個的元素的。
+	char line[MAX_LINE_CHAR];
+這是用來存放從Set::temp中傳來的那一行字串，以便做進一步處理用的。
+};
+
+	2.class UI
+
+class UI{
+public:
+	UI();
+Construcor，在UI被生成時，從welcome.dat中讀進歡迎畫面用。會把welcome.dat解回可理解的文字檔。
+	~UI();
+Destructor，在UI被消滅時，會從goodbye.dat中讀進結束畫面。會把goodbye.dat解回可理解的文字檔。
+
+	void MENU();
+這是使用者介面的主選單
+	void SELE();
+這是讀萬用選項的method
+	void ADD();
+這是加入元素到Set用的選單
+	void REMOVE();
+這是移除元素用的選單
+	void INT();
+這是聯集用的選單
+	void UNI();
+這是交集用的
+	void DIF();
+這是差集用的
+	void HELP();
+這是簡單的使用說明
+	void NEW();
+這是有關於此程式的紀錄，其實也就是目錄下HW2.log內的內容
+	void MAX();
+這是用來求最大集合的選單（在1.9.11版還不能用）
+
+	char key[260];
+這是用來存萬用選單所讀到字母，以供判定下一步要怎麼做的。
+};
+
+	3.hw2.cpp
+int main(){
+	...
+	cout	<< "請輸入要開啟的檔案名稱：";	//這裡是請使用者輸入要開的檔案名稱，接下來這個名稱會被送給新開的Set A，然後A的Constructor就會執行，生出很多新Set來存檔案中的資料。
+	cin	>> filename ;
+
+	Set A(filename);
+	UI HW2;	//這裡宣告了一個使用者介面。在main結束時他會執行Destructor（因為他被清掉了）
+
+	for(i=0;i<Set::now_Set;i++)	//這邊則是手動清掉A宣告的Set，因為當A自己被清掉時，似乎不會也把Set::list[]中的Set也清掉，這樣一來，它們的Destructor無法執行，也就不會寫到檔案裡了。
+		delete Set::list[i];
+	...
+}
+
+	4.other files
+	
+welcome.dat
+經過簡單加密的歡迎畫面
+goodbuy.dat
+經過簡單加密的結束畫面
+HW2.log
+這個作業的日誌
+README
+這個文件，HW2的詳細說明文件
+
+encode.cpp
+簡單的加密程式，讓我可以加密自己的welcome.dat
+*.old
+歡迎，結束畫面的正常文字檔
+
+B.設計流程
+1.主架構
+這個程式是這樣運作的：
+首先是由第一個Set A把檔案讀進來，再分配給一個個的Set。
+之後把操作Set的工作和與使用者的互動，交給UI HW2。在HW2處理完以後，結束程式時，再讓Set們的Destructor接手一切。
+2.輸入/輸出
+輸入檔的格式遵循老師所規定的，由數個元素組成一行。
+但是實際在操作時，Windows用的換行符號在UNIX作業系統下會造成程式出現奇妙的輸出（多輸出了^M）
+3.class Set
+本來，這個Set一開始只有一些基本的成員。
+像是存元素用的data[]，計算現在元素的now_element。操作用的add()，remove()，show()。不過在要求中有提到，要寫一個Constructor，能在裡面指定要輸入的檔案名稱，並且要求，把每一行交給不同的Set。這讓我必須開始考量不一樣的寫法，必須存在能讓第一個Set，甚至是每一個Set都能存取的元素。
+
+好在，有教到static
+
+所以裡面static的元素，都是為了這個要求而存在的。他們也影響了後來其他Set的命名方式，（必須要把新的Set pointer放在一個static的陣列中。）
+4.使用者介面
+這個東西本來，只是要寫在hw2.cpp中的一個function，但是想想，實在不想寫一大堆switch（在選單方面，我只會這樣寫），於是試著用class寫寫看。事實上，我也不過是把一堆要用的method，寫在這一個class中罷了...（大部分都是public，但是就算全部都丟到private中似乎也沒有分別）
+比較有趣的事，我利用剛剛練習過的（在Set.h中）Constructor和Destructor，於介面中，實作了歡迎畫面和結束畫面的讀入。並且把之前沒有做到的構想寫出來了。
+
+C.心得討論
+這次的程設作業，的確如老師所說，比上次的簡單很多（雖然有奇妙的Constructor用法），也因為這樣，我才有機會寫進很多我自己喜歡的東西（歡迎畫面，結束畫面，日誌...），這些小東西沒有什麼特別的，但是，卻讓我自己覺得寫這個作業很有趣，為了把自己想做的東西做完。
+這樣做也有缺點。我會想先寫完自己所要的，而不是別人所要求的。
+我是一個自私的人呀。
+
+對了，有人知道歡迎畫面和結束畫面分別是參考自那兩個軟體嗎？:p
