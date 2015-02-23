@@ -1,0 +1,29 @@
+# Project: NOISE
+# Makefile created by Dev-C++ 4.9.9.0
+
+CPP  = g++.exe -D__DEBUG__
+CC   = gcc.exe -D__DEBUG__
+WINDRES = windres.exe
+RES  = 
+OBJ  = NOISE.o $(RES)
+LINKOBJ  = NOISE.o $(RES)
+LIBS =  -L"D:/Program Files/Dev-Cpp/lib" -L"D:/Program Files/DXSDK/Lib" -mwindows  -g3 
+INCS =  -I"D:/Program Files/Dev-Cpp/include"  -I"D:/Program Files/DXSDK/Include" 
+CXXINCS =  -I"D:/Program Files/Dev-Cpp/include/c++"  -I"D:/Program Files/Dev-Cpp/include/c++/mingw32"  -I"D:/Program Files/Dev-Cpp/include/c++/backward"  -I"D:/Program Files/Dev-Cpp/include" 
+BIN  = NOISE.exe
+CXXFLAGS = $(CXXINCS)   -g3
+CFLAGS = $(INCS)   -g3
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before NOISE.exe all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "NOISE.exe" $(LIBS)
+
+NOISE.o: NOISE.cpp
+	$(CPP) -c NOISE.cpp -o NOISE.o $(CXXFLAGS)
