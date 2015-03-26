@@ -71,3 +71,15 @@ chan2
   .put 3
   .put 15
 
+# After a short talk by O3, I think it's time to figure out the types.
+
+# fold         ::      ([b] -> a -> [b]) ->  [b] -> a -> [b]
+# mapper       :: f ->                       [b] -> a -> [b]
+# transducer   :: f -> ([b] -> a -> [b]) ->  [b] -> a -> [b]
+# transducer f ::      ([b] -> a -> [b]) -> ([b] -> a -> [b])
+
+# fold         :: A -> A      # composable but boring
+# mapper       :: f -> A      # not composable
+# transducer   :: f -> A -> A # not composable
+# transducer f :: A -> A      # composable and customizable
+
