@@ -1,0 +1,145 @@
+[
+  {
+    "src": "u8279-03",
+    "leftTop": {
+      "x": 0,
+      "y": 3
+    },
+    "rightBottom": {
+      "x": 200,
+      "y": 162
+    }
+  },
+  {
+    "type": "line",
+    "head": "left-top-corner",
+    "tail": "left-bottom-corner",
+    "controlPoints": [
+      {
+        "x": 44,
+        "y": 63
+      },
+      {
+        "x": 44,
+        "y": 92
+      }
+    ]
+  },
+  {
+    "type": "line",
+    "head": "horiz-connect",
+    "tail": "horiz-connect",
+    "controlPoints": [
+      {
+        "x": 44,
+        "y": 63
+      },
+      {
+        "x": 156,
+        "y": 63
+      }
+    ]
+  },
+  {
+    "type": "line",
+    "head": "right-top-corner",
+    "tail": "right-bottom-corner",
+    "controlPoints": [
+      {
+        "x": 156,
+        "y": 63
+      },
+      {
+        "x": 156,
+        "y": 92
+      }
+    ]
+  },
+  {
+    "type": "line",
+    "head": "horiz-connect",
+    "tail": "horiz-connect",
+    "controlPoints": [
+      {
+        "x": 44,
+        "y": 92
+      },
+      {
+        "x": 156,
+        "y": 92
+      }
+    ]
+  },
+  {
+    "type": "line",
+    "head": "free",
+    "tail": "free",
+    "controlPoints": [
+      {
+        "x": 30,
+        "y": 114
+      },
+      {
+        "x": 170,
+        "y": 114
+      }
+    ]
+  },
+  {
+    "type": "line",
+    "head": "free",
+    "tail": "free",
+    "controlPoints": [
+      {
+        "x": 18,
+        "y": 137
+      },
+      {
+        "x": 182,
+        "y": 137
+      }
+    ]
+  },
+  {
+    "type": "vert-slash",
+    "head": "vert-connect",
+    "tail": "slash-left",
+    "controlPoints": [
+      {
+        "x": 100,
+        "y": 63
+      },
+      {
+        "x": 100,
+        "y": 110
+      },
+      {
+        "x": 100,
+        "y": 175
+      },
+      {
+        "x": 14,
+        "y": 185
+      }
+    ]
+  },
+  {
+    "type": "curve",
+    "head": "narrow-for-dot",
+    "tail": "free",
+    "controlPoints": [
+      {
+        "x": 104,
+        "y": 137
+      },
+      {
+        "x": 126,
+        "y": 170
+      },
+      {
+        "x": 175,
+        "y": 179
+      }
+    ]
+  }
+]
