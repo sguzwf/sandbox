@@ -4,34 +4,49 @@ require! {
 
 running-as-script = not module.parent
 
-stroke-type = do
+const stroke-type = do
   '1': 'line'
   '2': 'curve'
   '3': 'bend-line'
   '4': 'OTSU'
   '6': 'complex-curve'
   '7': 'vert-slash'
-head-type = do
+const head-type = do
   '0': 'free'
   '2': 'horiz-connect'
   '32': 'vert-connect'
   '12': 'left-top-corner'
   '22': 'right-top-corner'
   '7': 'narrow-for-dot'
-tail-type = do
-  '0': 'free'
-  '2': 'horiz-connect'
-  '32': 'vert-connect'
-  '13': 'left-bottom-corner'
-  '23': 'right-bottom-corner'
-  '4': 'hook-left'
-  '5': 'hook-right'
-  #'5': 'hook-up'
-  '313': 'left-bottom-GT' # XXX: what is a G/T?
-  '7': 'slash-left'
-  #'0': 'slash-right'
-  '8': 'stop-for-dot'
-
+const tail-type = do
+  '1': do # line
+    '0': 'free'
+    '2': 'horiz-connect'
+    '32': 'vert-connect'
+    '13': 'left-bottom-corner'
+    '23': 'right-bottom-corner'
+    '4': 'hook-left'
+    '313': 'left-bottom-GT' # XXX: what is a G/T?
+  '2': do # curve
+    '7': 'slash-left'
+    '0': 'slash-right'
+    '8': 'stop-for-dot'
+    '4': 'hook-left'
+    '5': 'hook-right'
+  '3': do # bend-line
+    '0': 'free'
+    '5': 'hook-up'
+  '4': do # OTSU
+    '0': 'free'
+    '5': 'hook-up'
+  '6': do # complex curve
+    '7': 'slash-left'
+    '0': 'slash-right'
+    '8': 'stop-for-dot'
+    '4': 'hook-left'
+    '5': 'hook-right'
+  '7': do # vert slash
+    '7': 'slash-left'
 
 parser = ->
   parts = it.split /\$|\s/
@@ -51,7 +66,7 @@ parser = ->
       body.push do
         type: stroke-type[type]
         head: head-type[head]
-        tail: tail-type[tail]
+        tail: tail-type[type][tail]
         control-points:
           * x: +x0, y: +y0
           * x: +x1, y: +y1
@@ -59,7 +74,7 @@ parser = ->
       body.push do
         type: stroke-type[type]
         head: head-type[head]
-        tail: tail-type[tail]
+        tail: tail-type[type][tail]
         control-points:
           * x: +x0, y: +y0
           * x: +x1, y: +y1
@@ -68,7 +83,7 @@ parser = ->
       body.push do
         type: stroke-type[type]
         head: head-type[head]
-        tail: tail-type[tail]
+        tail: tail-type[type][tail]
         control-points:
           * x: +x0, y: +y0
           * x: +x1, y: +y1

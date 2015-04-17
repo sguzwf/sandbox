@@ -126,7 +126,7 @@
   {
     "type": "curve",
     "head": "narrow-for-dot",
-    "tail": "free",
+    "tail": "slash-right",
     "controlPoints": [
       {
         "x": 104,
