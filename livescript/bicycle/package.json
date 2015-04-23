@@ -1,12 +1,13 @@
 {
   "private": true,
   "scripts": {
-    "start": "/usr/bin/env lsc --prelude --require ./bike.ls"
+    "start": "/usr/bin/env lsc --prelude --require ./$.ls"
   },
   "dependencies": {
     "bluebird": "^2.9.24",
     "entities": "^1.1.1",
     "html2jade": "^0.8.3",
+    "json-stable-stringify": "^1.0.0",
     "liftp": "^0.1.0",
     "norm": "0.0.2",
     "soap": "^0.8.0",

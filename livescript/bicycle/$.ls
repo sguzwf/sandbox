@@ -6,6 +6,7 @@ require! {
   'fs'
   'path'
   # string
+  'json-stable-stringify': stringify
   'punycode'
   'entities'
   'unorm'
@@ -17,10 +18,12 @@ require! {
 }
 
 lift = liftp Promise.all
+show = lift console.log
+stringify = lift stringify
 
 module.exports = {
-  Promise, lift,
+  Promise, lift, show
   fs, path,
-  entities, punycode, unorm,
+  stringify, entities, punycode, unorm,
   request, xml2js, html2jade, soap
 }
