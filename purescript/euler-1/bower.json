@@ -1,0 +1,17 @@
+{
+  "name": "euler-1",
+  "version": "0.0.1",
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-arrays": "~0.3.7",
+    "purescript-foldable-traversable": "~0.3.1"
+  }
+}
