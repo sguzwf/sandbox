@@ -1,0 +1,21 @@
+# Literate LiveScript
+
+This is an example for literate livescript. Although I can just wrap comments in
+`/**/`, I think a markdown is more beautiful.
+
+    request = require 'superagent'
+
+    triple-ip = ->
+      { body: { origin: a } } <- request.get 'http://httpbin.org/ip'
+      { body: { origin: b } } <- request.get 'http://httpbin.org/ip'
+      { body: { origin: c } } <- request.get 'http://httpbin.org/ip'
+      console.log "#a, #b, #c"
+
+Inline code will not be executed `console.log "hello"`.
+
+```livescript
+triple-ip!
+```
+
+Have fun.
+
