@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "dependencies": {
+    "YoloDev.Dnx.FSharp": {
+      "type": "build",
+      "version": "1.0.0-beta-*"
+    },
+    "Suave": "0.31.1",
+    "Newtonsoft.Json": "7.0.1"
+  },
+  "frameworks": {
+    "dnx451": {}
+  },
+  "compiler": {
+    "name": "F#",
+    "compilerAssembly": "YoloDev.Dnx.FSharp",
+    "compilerType": "YoloDev.Dnx.FSharp.FSharpProjectCompiler"
+  }
+}
