@@ -1,4 +1,26 @@
 module Main where
+
+{-
+  2015-12-12
+
+  - 看到 zoomcraft XD 記得查查 memcache 在哪個 repo ？
+
+  - `genExpr :: Type -> CodeGen`
+    原來 where 下面的 function 也可以寫 type 啊。
+
+  - 終於會動了，抄都會抄錯。
+
+  - 不知道 build 很慢是不是因為 type 很複雜害的？
+
+  - runIO?
+
+  - 18f2247 其實只快一點點？還是 Air 太慢？
+
+    real    1m5.769s
+    user    1m21.585s
+    sys     0m41.418s
+-}
+
 {-
   2015-12-11
 
@@ -17,7 +39,9 @@ module Main where
   - `instance`? polymorphism? `pprint`?
 
   - GeneralizeNewtypeDeriving? MultiWayIf!
-
+    下午 #haskell.tw 在討論 MultiWayIf 怎麼排版才好， cibs 大大建議用黏在一起的
+    寫法： `if| ->` 好維持兩格空白縮排。 `if | ->` 前面五格，很難排，而換行才寫
+    `|` 被評為：「就快要對齊了，又剛好歪掉」 XD
 -}
 
 {-
@@ -57,4 +81,3 @@ data Color = RED | BLUE | YELLOW
 allColors :: [Color]
 allColors = [minBound..maxBound]
 
-main = putStrLn $ show allColors
