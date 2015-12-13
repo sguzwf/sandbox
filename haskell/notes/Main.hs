@@ -1,6 +1,19 @@
 module Main where
 
 {-
+  2015-12-13
+
+  - 原來是 `transExprFromType :: Type -> CodeGen` 的
+    `AppT (AppT (TupleT 2) a) b -> "((" <> genExpr a <> ") *** (" <> genExpr b <> "))"`
+    寫錯了。寫成：
+    `AppT (AppT (TupleT 2) a) b -> "(" <> genExpr a <> ") *** (" <> genExpr b <> ")"`
+    結果是少剝一層 XD
+
+  - not a panacea
+
+-}
+
+{-
   2015-12-12
 
   - 看到 zoomcraft XD 記得查查 memcache 在哪個 repo ？
@@ -19,6 +32,22 @@ module Main where
     real    1m5.769s
     user    1m21.585s
     sys     0m41.418s
+
+  - 原來「可以看到所有 Module 」指的是像 lookupTypeName 這類 function 。
+    然後把結果分成 trivial 和 non-trivial 。
+
+  - 原來也有 Kata 。像是 Introductory Haskell: Solving the Sorting-It-Out Kata 。
+
+  - 只有 `deIfExp (If exp1 exp2 exp3)` 要自己寫。
+
+  - 蟲：
+    - `ConDecl (RecDecl name1 name2)` 最內層的 fmap 多包一層 `()` 。
+    - `deIfDecl (DeprPragmaDecl srcLoc name)` 和
+      `deIfDecl (WarnPragmaDecl srcLoc name)` 也一樣。
+    - `deIfDeriving a = (((deIfQName) *** (fmap (deIfType))) a)` 也一樣。
+    - `deIfExp (GenPragma string int1 int2 exp)`
+    - `deIfGadtDecl (GadtDecl srcLoc name1 name2 type0)`
+    - `deIfImportDecl (ImportDecl importLoc importModule importQualified importSrc importSafe importPkg importAs importSpecs)`
 -}
 
 {-
