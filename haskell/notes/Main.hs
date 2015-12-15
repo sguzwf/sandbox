@@ -1,6 +1,36 @@
 module Main where
 
 {-
+  2015-12-15
+
+  - 不懂 Applicative ，更別論 pure 了。
+
+  - Extend? Comonad?
+
+  - Raja rajasharan@gmail.com 提到：
+
+    `(>>=) :: m a -> (a -> m b) -> m b`
+
+    換成：
+
+    `(a -> m b) -> m a -> m b` ，也就是 `(a -> m b) -> (m a -> m b)`
+
+    不是更好理解嗎？
+
+    讓我想起，自己的 Monad 入門是從幫 JS Promise/A+ 做 lift ：
+
+    `liftPromise :: (a -> b) -> p a -> p b`
+
+    開始的。
+
+    Joel Williamson joel.s.williamson@gmail.com 提到 Raja 講的就是：
+
+    `(=<<) :: (a -> m b) -> m a -> m b`
+
+    也可以靠 `flip` 實現： `flip (>>=)` 。
+-}
+
+{-
   2015-12-13
 
   - 原來是 `transExprFromType :: Type -> CodeGen` 的
@@ -10,7 +40,6 @@ module Main where
     結果是少剝一層 XD
 
   - not a panacea
-
 -}
 
 {-
