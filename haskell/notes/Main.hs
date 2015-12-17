@@ -1,6 +1,21 @@
 module Main where
 
 {-
+  2015-12-17
+
+  - liftIO?
+
+  - 所以先搞定 IO 再來處理裡面的肉？
+-}
+
+{-
+  2015-12-16
+
+  - `GLFW.Key'Escape`? 那個 `'` 是什麼？
+    然後是 `GLFW.KeyState'Released` ，嗯，我還沒讀完 FRP 跟 Arrows 呢。
+-}
+
+{-
   2015-12-15
 
   - 不懂 Applicative ，更別論 pure 了。
