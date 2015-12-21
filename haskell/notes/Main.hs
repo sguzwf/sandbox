@@ -1,6 +1,25 @@
 module Main where
 
 {-
+  2015-12-22
+
+  - 原來 Dec 中把 constructor 對應的形狀都寫出來了：
+    http://hackage.haskell.org/package/template-haskell-2.10.0.0/docs/Language-Haskell-TH-Syntax.html#t:Dec
+
+  - genDataTransformer 先處理了 moduleInfo ，再用在其他的 component 上。故需要處
+    理三種不同 patterns 。
+
+  - Type 中的 `[Something]` 竟然是 `AppT ListT (ConT Something)` ，想通了也合理
+    ，畢竟不會有 `[Something, Otherthing]` 這種 Type 。
+-}
+
+{-
+  2015-12-21
+
+  - 知道 Functor 和 Applicative 了，重讀一遍。
+-}
+
+{-
   2015-12-17
 
   - liftIO?
