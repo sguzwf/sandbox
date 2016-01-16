@@ -1,5 +1,36 @@
 module Main where
 
+import qualified Data.Set as S
+
+{-
+  2016-01-16 508534d
+
+  - 不保證這個檔可以執行，好像會好讀些。
+
+  - 記得 C 說多存了什麼，原來是加了個放 Constructors 的 Map 。
+    PH 說得沒錯，可以很像在寫 script language 。這次 C 的確像在寫 script 。
+
+  - dataLoc?
+
+  - 有 λ ，然後社會化就好了。
+-}
+
+{-
+  2015-12-23
+
+  - intercalate
+
+  - Map.!
+-}
+
+dupNames :: [String] -> S.Set String
+dupNames names = go S.empty S.empty names where
+  go res seen (nameStr : others) =
+    if S.member nameStr seen
+      then go (S.insert nameStr res) seen others
+      else go res (S.insert nameStr seen) others
+  go res _ _ = res
+
 {-
   2015-12-22
 
