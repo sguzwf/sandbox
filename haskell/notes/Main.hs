@@ -3,6 +3,57 @@ module Main where
 import qualified Data.Set as S
 
 {-
+  2016-01-19 508534d
+
+  - second 是 Control.Arrow 中的 second
+-}
+
+second :: Arrow a => a b c -> a (d, b) (d, c)
+
+{-
+  - `second (const shape)` 是...？
+    看來 `(->)` 自動就是 Arrow 了。
+-}
+
+const [] :: b -> [t]
+second (const []) :: (d, b) -> (d, [t])
+
+{-
+  - `dataCons` 是 `map extract cons`
+    `extract` 回來的結果和 `forgotNameL` 有關，剩下來的才被塞到 `second (const
+    shape)` 中。
+
+  - `forgotNameL` 把 data 中的 l (`SrcSpanInfo`4ni?) 都換成 `()` 。
+
+  - 一下 forgot 一下 forget ...
+
+  - 原來我遇上的是 7.4.6.3 Record Constructors 。
+-}
+
+data Conuter a = forall self. NewCounter
+    { _this    :: self
+    , _inc     :: self -> self
+    , _display :: self -> IO()
+    , tag      :: a
+    }
+
+{-
+  - 的 _this, _inc, _display, tag 都只有 signature ，沒有實作 XD
+    在 function 中用上時才指定實作，於是在沒有參數（nullary） function 時可以給
+    想要的實作，到 unary, binary functions 再靠 destructuring 拆出來用的樣子。
+
+  - `extract` 的結果是 `(Name (), Int)` ， `map extract cons` 的結果是 `[(Name
+    (), Int)]` ，也就是 `dataCons` 沒錯，但 `dataCons shape` 就看不懂了 D:
+
+  - `dataCons shape` 是 `[(Name (), Int)] shape` ？但 `[]` 之後不成吃東西吧？
+    猜 `dataCons shape` 得到的正是該 `shape` 中的 `dataCons` ，才能把 `(Name (),
+    Int)` 送給 `second (const shape)` ，得到 `[(Name (), shape)]` ，再送給
+    `M.fromList` 吃。
+
+  - ForgetL.hs 是手工的吧，既然表示四百多行不算什麼的話。
+-}
+
+{-
   2016-01-16 508534d
 
   - 不保證這個檔可以執行，好像會好讀些。
