@@ -2,6 +2,22 @@
 >
 > import qualified Data.Set as S
 
+2016-02-03 406d3be
+==================
+
+幾個 draft branch 的 commits 合成一個，總共是兩週的份，要一次看完有點勉強。
+
+來聽聽 2006 年 YAPC 的 Learning Haskell ：
+
+- EHC    <-> Clean internals   -- 變成 UHC 了
+- Hugs   <-> Small footprints  -- 停在 2006
+- Helium <-> Friendly messages -- 停在 2009
+- JHC    <-> Fast performance  -- JHC 掰， AJHC 掰 QQ
+- YHC    <-> Portable runtime  -- 停在 2011
+
+EHC 從 2005 九月做到 2006 十月（phd final version）。所以我可以預期 BYOHC 還會跑
+半年以上囉？
+
 
 2016-01-28 af112a8..1101e6a
 ===========================
