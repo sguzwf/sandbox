@@ -4,4 +4,4 @@
 !*.hs
 !*.lhs
 !*.in
-
+.stack-work/
