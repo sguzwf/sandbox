@@ -252,10 +252,12 @@ main = interact $ \inputStr ->
         ParseFailed loc msg -> "parse Prelude failed at " ++ show loc ++ ": " ++ msg
         ParseOk preludeMod ->
           let
+            -- * collectData 的結果是 CollectDataResult ，裡面有著 Types 的形狀（shape）、和 Data Constructors 的形狀。
             preludeData = collectData preludeMod
             mainData = collectData mod
             --preludeData = collectDataResultAddModule (ModuleName () "Prelude") $ collectData preludeMod
             --mainData = collectDataResultAddModule (ModuleName () "Main") $ collectData mod
+            -- * CollectDataResult 是個 Monoid ，可以用 `<>` 黏成一個。
             allData = preludeData <> mainData
           in
             {-
@@ -268,4 +270,7 @@ main = interact $ \inputStr ->
             -}
             show (forgetL mod) ++
             "\n\n" ++
+            -- * preludeMod 看來不用處理 `case .. of` 順序問題（印象中是靠工人智慧排好？），於是用舊的 desugarModule 。
+            -- * 新的 dusugarModule 中的 deCaseReorderModule 要知道 collectData 蒐集來的資料才能工作。
+            -- * 在 DeCaseReorder.hs 中看到的 a1 都是 CollectDataResult 。
             genInit ++ genPreludeNative ++ transModule (desugarModule0 preludeMod) ++ transModule (desugarModule allData mod) ++ genRun

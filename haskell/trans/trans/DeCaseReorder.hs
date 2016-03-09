@@ -52,9 +52,8 @@ data FallbackGroupConBranchBuilding l = GroupConBranchBuilding
 instance Functor FallbackGroupConBranchBuilding where
   fmap f (GroupConBranchBuilding l con n alts) = GroupConBranchBuilding (f l) (fmap f con) n (fmap (fmap f) alts)
 
--- 註：
--- Haskell.Src.Exts 的 Alt 長這樣： Alt l (Pat l) (Rhs l) (Maybe (Binds l))
--- https://hackage.haskell.org/package/haskell-src-exts-1.17.1/docs/Language-Haskell-Exts-Annotated-Syntax.html#t:Alt
+-- * Haskell.Src.Exts 的 Alt 長這樣： Alt l (Pat l) (Rhs l) (Maybe (Binds l))
+-- * https://hackage.haskell.org/package/haskell-src-exts-1.17.1/docs/Language-Haskell-Exts-Annotated-Syntax.html#t:Alt
 data AltPartial l = AltPartial
   [Pat l]
   (Rhs l)
@@ -74,6 +73,13 @@ instance Functor FallbackGroupLitBranch where
 
 dataShapeToConBranches :: l -> DataShape -> [FallbackGroupConBranchBuilding l]
 dataShapeToConBranches l shape =
+  -- * dataCons shape 取出了 `[(QName (), Int, M.Map (Name ()) Int)]` ，按 CollectData.hs 中的註解，表示：
+  -- * -- [(data constructor name, number of slot, record field's index)]
+  -- * 這裡不需要 record field's index ，只用到名字和有幾個洞（slot）。
+  -- * `fmap (const l) conName` 把 `l` 塞回 `QName ()` 中，變回 `QName l` 。
+  -- * slot number 一直害我誤會...。
+  -- * 這裡還能看出來，那個 `[]` 是空的 `[AltPartial l]` ，一切才要開始。
+  -- * 所以 GroupConBranchBuilding 的 Building 大概就是「還在蓋」的意思吧？蓋好的叫做 GroupConBranch 。
   map (\(conName, slotN, _) -> GroupConBranchBuilding l (fmap (const l) conName) slotN []) (dataCons shape)
 
 modifyListElem :: [a] -> Int -> (a -> a) -> [a]
@@ -81,7 +87,7 @@ modifyListElem as n f = go n as where
   go 0 (a:as) = f a : as
   go n (a:as) = a : go (n-1) as
 
--- [Pat l] 的數量要怎麼變多？
+-- * [Pat l] 的數量要怎麼變多？
 altToPartial :: Alt l -> AltPartial l
 altToPartial (Alt l pat rhs binds) = AltPartial [pat] rhs binds
 
@@ -91,10 +97,10 @@ buildReorder conMap l = sortPat 0 1
     sortPat :: Int -> Int -> [AltPartial l] -> OrderedCase l
     sortPat b e [] = error "sortPat: empty alts"
     sortPat b e [AltPartial [] rhs binds] = OrderedCaseRHS rhs binds
-    -- XXX: 不懂
+    -- * 不懂
     sortPat b e (AltPartial [] rhs binds : _) = error "buildReorder-sortPat: non-singleton leading empty pattern"
     sortPat b e alts = {- trace ("sortPat " ++ show (fmap forgetL alts)) $ -} OrderedCase l (Ident l ("x" ++ show b ++ "-")) (grouping alts) where
-      -- 我還是不知道 [Pat l] 何時變長的， altToPartial 明明只是把一個放到 [] 中
+      -- * 還是不知道 [Pat l] 何時變長的， altToPartial 明明只是把一個放到 [] 中
       grouping :: [AltPartial l] -> [FallbackGroup l]
       grouping [] = []
       grouping (g:gs) = case g of
@@ -104,23 +110,34 @@ buildReorder conMap l = sortPat 0 1
         AltPartial (PVar _ name : patsLater) rhs binds -> GroupVar l name (sortPat (b+1) e [AltPartial patsLater rhs binds]) : grouping gs
         AltPartial (PApp _ name pats : patsLater) rhs binds ->
           let
-            -- conMap?
+            -- * conMap? conMap 就是傳進來的 IndexDataShapes 。
+            -- * 這行把記在 conMap 中， name 的 DataShape 拿出來。
             shape = snd $ conMap M.! {- traceShowId -} (forgetL name)
+            -- * branchesSeed 是堆 [FallbackGroupConBranchBuilding l] ，大概是「還在蓋的， fallback 用的一組 data
+            -- * constructor 們」。
             branchesSeed = dataShapeToConBranches l shape
 
             eatCons :: [FallbackGroupConBranchBuilding l] -> [AltPartial l] -> ([FallbackGroupConBranch l], [AltPartial l])
+            -- * 當 `[AltPartial l]` 用光的時候，就是該叫 `buildBranch` 蓋出 `FallbackGroupConBranch l` 的時候啦。
             eatCons acc [] = (map buildBranch acc, [])
-            -- gg ... ，一個 g 不夠就兩個 g 嗎？
+            -- * gg ... ，一個 g 不夠就兩個 g 嗎？`g` 是一個 `AltPartial l` 。
             eatCons acc gg@(g:gs) = {- trace ("eatCons " ++ show (length acc) ++ " " ++ show (forgetL g)) $ -} case g of
+              -- * 一樣是個看到 `PParen l (Pat l)` 就把括號拆掉的故事。
               AltPartial (PParen _ p : patsLater) rhs binds ->
-                eatCons acc (AltPartial (p : patsLater) rhs binds : gs) -- 變長了！
+                eatCons acc (AltPartial (p : patsLater) rhs binds : gs)
               AltPartial (PApp _ name pats : patsLater) rhs binds ->
                 let
+                  -- * 這行把記在 conMap 中， name 的 index 拿出來。
                   i = fst $ conMap M.! {- traceShowId -} (forgetL name)
+                  -- * `modifyListElem` 的功能是，把第三個參數那個 function （在此例是 `$` 後面那整段），作用在 acc 裡面
+                  -- * 第 i 個元素上。
+                  -- * 於是 `PApp l (QName l) [Pat l]` 代表的 data constructor and argument patterns 被放到正確的位置，
+                  -- * 接在本來存下的 `[AltPartial l]` ，也就是 `os` 的後面。
                   acc' = modifyListElem acc i $ \br@(GroupConBranchBuilding l con slotNum os) ->
                     GroupConBranchBuilding l con slotNum (os ++ [AltPartial (pats ++ patsLater) rhs binds])
                 in
                   eatCons acc' gs
+              -- * 此後不是 PApp ，先 buildBranch ，把剩下的 `[AltPartial l]` 留給下一次的 grouping 處理。
               _ -> (map buildBranch acc, gg)
 
             buildBranch :: FallbackGroupConBranchBuilding l -> FallbackGroupConBranch l
@@ -128,6 +145,10 @@ buildReorder conMap l = sortPat 0 1
               [] -> GroupConBranch l con e slotNum (OrderedCaseFallback l)
               _ -> {- trace ("buildBranch " ++ show (length os)) $ -} GroupConBranch l con e slotNum (sortPat e (e+slotNum) os)
 
+            -- * 這裡的 `g:gs` 是 `grouping` 吃到的 `[AltPartial l]` 。
+            -- * `gs'` 可能是 `[]` 的，或是上次處理到一半，頭不是 `PParen` 或 `PApp` 的 `[AltPartial l]` 。
+            -- * 讀到這裡，我猜 `sortPat b e ..` 的 `b` 和 `e` 是 begin 和 end ，但還不知道是什麼意思。
+            -- * 算好的 e 會變成 `GroupConBranch` 的 slot begin ，一開始的 b 則是這次 `x-` 獨一無二的序號。
             (brs, gs') = eatCons branchesSeed (g:gs)
           in
             GroupCon l brs : grouping gs'
@@ -136,13 +157,13 @@ buildReorder conMap l = sortPat 0 1
 orderedCaseToExp :: OrderedCase l -> Exp l
 orderedCaseToExp (OrderedCaseFallback l) = Var l (UnQual l (Ident l "fallback-"))
 orderedCaseToExp (OrderedCaseRHS rhs binds) = rhsToExp rhs -- XXX 沒有處理 binds
-orderedCaseToExp (OrderedCase l target groups) = -- 我已經快忘記這些 constructors 了，這樣不對
+orderedCaseToExp (OrderedCase l target groups) = -- * 已經快忘記這些 constructors 了，這樣不對
   Let l (BDecls l [PatBind l (PVar l (Ident l "fallback+")) (UnGuardedRhs l (Var l (UnQual l (Ident l "fallback-")))) Nothing]) bodyExp where
-    bodyExp = go groups -- go 真的很常見
+    bodyExp = go groups -- * go 真的很常見
     go [] = Var l (UnQual l (Ident l "fallback+"))
     go (g:gs) =
       Let l (BDecls l [PatBind l (PVar l (Ident l "fallback-")) (UnGuardedRhs l (go gs)) Nothing]) bodyExp where
-        bodyExp = case g of -- shadowed?
+        bodyExp = case g of -- * shadowed?
           GroupWildCard l cs ->
             orderedCaseToExp cs
           GroupVar l var cs ->
@@ -154,8 +175,8 @@ orderedCaseToExp (OrderedCase l target groups) = -- 我已經快忘記這些 con
                 Alt l (PApp l con [ PVar l (Ident l ("x" ++ show i ++ "-")) | i <- [b .. b+slotNum-1]]) (UnGuardedRhs l (orderedCaseToExp cs)) Nothing
           other -> error $ "orderedCaseToExp:go: " ++ show (forgetL other) ++ " not supported" 
 
--- 棄用 [[Alt l]] 而改用 [AltPartial l] ？
--- 如果 fallbackGroup 只關心 Alt l 中的 Pat l 的話，那就沒錯。
+-- * 棄用 [[Alt l]] 而改用 [AltPartial l] ？
+-- * 如果 fallbackGroup 只關心 Alt l 中的 Pat l 的話，那就沒錯。
 --fallbackGroup :: [Alt l] -> [[Alt l]]
 --fallbackGroup alts = go alts where
 --  mergeable (Alt _ (PWildCard _) _ _) = False
@@ -203,12 +224,12 @@ rhsToExp (GuardedRhss l guards) =
 
 --reorder newVarNum fallbackNum (Case l exp alts) = case alts of
 --  [] -> Var l (Qual l (ModuleName l "Prelude") (Ident l "undefined"))
---  下面這個也是 list 喔
+--  * 下面這個也是 list 喔
 --  (Alt l1 (PWildCard _) rhs binds : alts) -> undefined -- tryRHS rhs binds alts
 --  (Alt l1 (PVar l2 var) rhs binds : alts) -> undefined
 
--- desugar-template 生出來的 code
--- 通通都要補上 a1 ...
+-- * desugar-template 生出來的 code
+-- * 通通都要補上 a1 ...
 deCaseReorderActivation :: SrcInfo l => CollectDataResult -> Activation l -> Activation l
 deCaseReorderActivation a1 (ActiveFrom l int) = ActiveFrom (id l) (id int)
 deCaseReorderActivation a1 (ActiveUntil l int) = ActiveUntil (id l) (id int)
@@ -331,29 +352,33 @@ deCaseReorderExp a1 (Lambda l pat exp) = Lambda (id l) (fmap (deCaseReorderPat a
 deCaseReorderExp a1 (Let l binds exp) = Let (id l) (deCaseReorderBinds a1 binds) (deCaseReorderExp a1 exp)
 deCaseReorderExp a1 (If l exp1 exp2 exp3) = If (id l) (deCaseReorderExp a1 exp1) (deCaseReorderExp a1 exp2) (deCaseReorderExp a1 exp3)
 deCaseReorderExp a1 (MultiIf l guardedRhs) = MultiIf (id l) (fmap (deCaseReorderGuardedRhs a1) guardedRhs)
--- 本來的
+-- * 本來的
 --deCaseReorderExp a1 (Case l exp alt) = Case (id l) (deCaseReorderExp a1 exp) (fmap (deCaseReorderAlt a1) alt)
--- 不知為何註解掉的？在觀察什麼嗎？
+-- * 不知為何註解掉的？在觀察什麼嗎？
 --deCaseReorderExp a1 c@(Case l exp alts@(Alt _ (PList _ _) _ _ : _)) = Case l (deCaseReorderExp a1 exp) (fmap (deCaseReorderAlt a1) alts)
 --deCaseReorderExp a1 c@(Case l exp alts@(Alt _ (PLit _ _ _) _ _ : _)) = Case l (deCaseReorderExp a1 exp) (fmap (deCaseReorderArt a1) alts)
 deCaseReorderExp a1 c@(Case l exp alts) =
   let
     d = buildReorder (dataConToShape a1) l (map altToPartial alts)
-    --               ^^^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^
-    --               IndexDataShapes       [AltPartial]
-    --  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    --  OrderedCase
+    -- *             ^^^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^
+    -- *             IndexDataShapes       [AltPartial]
+    -- *^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    -- *OrderedCase
+    --
+    -- * dataConToShape 從傳進來的 CollectDataResult 中拿出 IndexDataShapes 。
+    -- * IndexDataShapes 在 CollectData.hs 中，長這樣：
+    -- * > type IndexDataShape = M.Map (QName ()) (Int, DataShape)
     c = Let l (BDecls l
       [ PatBind l (PVar l (Ident l "fallback-")) (UnGuardedRhs l (Var l (UnQual l (Ident l "undefined")))) Nothing
       , PatBind l (PVar l (Ident l "x0-")) (UnGuardedRhs l (deCaseReorderExp a1 exp)) Nothing
       ] ) bodyExp
     bodyExp = orderedCaseToExp d
--- 不知道為何註解掉
+-- * 不知道為何註解掉
 -- reorder 1 0 c
   in
     --error $ "\n\n\n" ++ show (forgetL d) ++ "\n\n\n" ++ show (forgetL c) ++ "\n\n\n" ++ prettyPrint c
     c
--- 也許該看 draft 而不是 master 了
+-- * 也許該看 draft 而不是 master 了
 -- Case (id l) (deCaseReorderExp a1 exp) (fmap (deCaseReorderAlt a1) alt)
 deCaseReorderExp a1 (Do l stmt) = Do (id l) (fmap (deCaseReorderStmt a1) stmt)
 deCaseReorderExp a1 (MDo l stmt) = MDo (id l) (fmap (deCaseReorderStmt a1) stmt)
