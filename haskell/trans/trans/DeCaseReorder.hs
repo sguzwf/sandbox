@@ -158,19 +158,24 @@ orderedCaseToExp :: OrderedCase l -> Exp l
 orderedCaseToExp (OrderedCaseFallback l) = Var l (UnQual l (Ident l "fallback-"))
 orderedCaseToExp (OrderedCaseRHS rhs binds) = rhsToExp rhs -- XXX 沒有處理 binds
 orderedCaseToExp (OrderedCase l target groups) = -- * 已經快忘記這些 constructors 了，這樣不對
+  -- * > let fallback+ = fallback- in ..
   Let l (BDecls l [PatBind l (PVar l (Ident l "fallback+")) (UnGuardedRhs l (Var l (UnQual l (Ident l "fallback-")))) Nothing]) bodyExp where
     bodyExp = go groups -- * go 真的很常見
     go [] = Var l (UnQual l (Ident l "fallback+"))
     go (g:gs) =
+      -- * > let fallback- = ..
       Let l (BDecls l [PatBind l (PVar l (Ident l "fallback-")) (UnGuardedRhs l (go gs)) Nothing]) bodyExp where
-        bodyExp = case g of -- * shadowed?
+        bodyExp = case g of
           GroupWildCard l cs ->
             orderedCaseToExp cs
           GroupVar l var cs ->
+            -- * > let var = target in ..
             Let l (BDecls l [PatBind l (PVar l var) (UnGuardedRhs l (Var l (UnQual l target))) Nothing]) (orderedCaseToExp cs)
           GroupCon l bs ->
+            -- * > case target of ..
             Case l (Var l (UnQual l target)) (map bsToAlt bs)
             where
+              -- * > Con x0- x1- x2- .. -> ..
               bsToAlt (GroupConBranch l con b slotNum cs) =
                 Alt l (PApp l con [ PVar l (Ident l ("x" ++ show i ++ "-")) | i <- [b .. b+slotNum-1]]) (UnGuardedRhs l (orderedCaseToExp cs)) Nothing
           other -> error $ "orderedCaseToExp:go: " ++ show (forgetL other) ++ " not supported" 
