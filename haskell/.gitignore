@@ -3,5 +3,10 @@
 !.gitignore
 !*.hs
 !*.lhs
+!*.js
 !*.in
+!*.cabal
+!*.yaml
+!*.config
+!*.pl
 .stack-work/
