@@ -52,10 +52,17 @@ data FallbackGroupConBranchBuilding l = GroupConBranchBuilding
 instance Functor FallbackGroupConBranchBuilding where
   fmap f (GroupConBranchBuilding l con n alts) = GroupConBranchBuilding (f l) (fmap f con) n (fmap (fmap f) alts)
 
+data PatPartial l = PatPartial
+  {-# UNPACK #-} !Int -- slot begin
+  [Pat l]
+  deriving Show
+instance Functor PatPartial where
+  fmap f (PatPartial n pats) = PatPartial n (fmap (fmap f) pats)
+
 -- * Haskell.Src.Exts 的 Alt 長這樣： Alt l (Pat l) (Rhs l) (Maybe (Binds l))
 -- * https://hackage.haskell.org/package/haskell-src-exts-1.17.1/docs/Language-Haskell-Exts-Annotated-Syntax.html#t:Alt
 data AltPartial l = AltPartial
-  [Pat l]
+  [PatPartial l]
   (Rhs l)
   (Maybe (Binds l))
   deriving Show
@@ -89,26 +96,28 @@ modifyListElem as n f = go n as where
 
 -- * [Pat l] 的數量要怎麼變多？
 altToPartial :: Alt l -> AltPartial l
-altToPartial (Alt l pat rhs binds) = AltPartial [pat] rhs binds
+altToPartial (Alt l pat rhs binds) = AltPartial [PatPartial 0 [pat]] rhs binds
 
 buildReorder :: forall l. IndexDataShapes -> l -> [AltPartial l] -> OrderedCase l
-buildReorder conMap l = sortPat 0 1
+buildReorder conMap l = sortPat 1
   where
-    sortPat :: Int -> Int -> [AltPartial l] -> OrderedCase l
-    sortPat b e [] = error "sortPat: empty alts"
-    sortPat b e [AltPartial [] rhs binds] = OrderedCaseRHS rhs binds
+    sortPat :: Int -> [AltPartial l] -> OrderedCase l
+    sortPat e [] = error "sortPat: empty alts"
+    sortPat e [AltPartial [] rhs binds] = OrderedCaseRHS rhs binds
     -- * 不懂
-    sortPat b e (AltPartial [] rhs binds : _) = error "buildReorder-sortPat: non-singleton leading empty pattern"
-    sortPat b e alts = {- trace ("sortPat " ++ show (fmap forgetL alts)) $ -} OrderedCase l (Ident l ("x" ++ show b ++ "-")) (grouping alts) where
+    sortPat e (AltPartial [] rhs binds : _) = error "buildReorder-sortPat: non-singleton leading empty pattern"
+    sortPat e (AltPartial (PatPartial _ [] : patsUpper) rhs binds : as) = sortPat e (AltPartial patsUpper rhs binds : as)
+    sortPat e alts@(AltPartial (PatPartial b _ : _) _ _ : _) = {- trace ("sortPat " ++ show (fmap forgetL alts)) $ -} OrderedCase l (Ident l ("x" ++ show b ++ "-")) (grouping alts) where
       -- * 還是不知道 [Pat l] 何時變長的， altToPartial 明明只是把一個放到 [] 中
       grouping :: [AltPartial l] -> [FallbackGroup l]
       grouping [] = []
       grouping (g:gs) = case g of
         AltPartial [] rhs binds -> error "buildReorder-grouping: empty pattern"
-        AltPartial (PParen _ p : patsLater) rhs binds -> grouping (AltPartial (p : patsLater) rhs binds : gs) -- 丟掉 () 處理裡面的
-        AltPartial (PWildCard _ : patsLater) rhs binds -> GroupWildCard l (sortPat (b+1) e [AltPartial patsLater rhs binds]) : grouping gs
-        AltPartial (PVar _ name : patsLater) rhs binds -> GroupVar l name (sortPat (b+1) e [AltPartial patsLater rhs binds]) : grouping gs
-        AltPartial (PApp _ name pats : patsLater) rhs binds ->
+        AltPartial (PatPartial b [] : patsUpper) rhs binds -> grouping (AltPartial patsUpper rhs binds : gs)
+        AltPartial (PatPartial b (PParen _ p : patsLater) : patsUpper) rhs binds -> grouping (AltPartial (PatPartial b (p : patsLater) : patsUpper) rhs binds : gs) -- 丟掉 () 處理裡面的
+        AltPartial (PatPartial b (PWildCard _ : patsLater) : patsUpper) rhs binds -> GroupWildCard l (sortPat e [AltPartial (PatPartial (b+1) patsLater : patsUpper) rhs binds]) : grouping gs
+        AltPartial (PatPartial b (PVar _ name : patsLater) : patsUpper) rhs binds -> GroupVar l name (sortPat e [AltPartial (PatPartial (b+1) patsLater : patsUpper) rhs binds]) : grouping gs
+        AltPartial (PatPartial b (PApp _ name pats : patsLater) : patsUpper) rhs binds ->
           let
             -- * conMap? conMap 就是傳進來的 IndexDataShapes 。
             -- * 這行把記在 conMap 中， name 的 DataShape 拿出來。
@@ -122,10 +131,12 @@ buildReorder conMap l = sortPat 0 1
             eatCons acc [] = (map buildBranch acc, [])
             -- * gg ... ，一個 g 不夠就兩個 g 嗎？`g` 是一個 `AltPartial l` 。
             eatCons acc gg@(g:gs) = {- trace ("eatCons " ++ show (length acc) ++ " " ++ show (forgetL g)) $ -} case g of
+              AltPartial (PatPartial b [] : patsUpper) rhs binds ->
+                eatCons acc (AltPartial patsUpper rhs binds : gs)
               -- * 一樣是個看到 `PParen l (Pat l)` 就把括號拆掉的故事。
-              AltPartial (PParen _ p : patsLater) rhs binds ->
-                eatCons acc (AltPartial (p : patsLater) rhs binds : gs)
-              AltPartial (PApp _ name pats : patsLater) rhs binds ->
+              AltPartial (PatPartial b (PParen _ p : patsLater) : patsUpper) rhs binds ->
+                eatCons acc (AltPartial (PatPartial b (p : patsLater) : patsUpper) rhs binds : gs)
+              AltPartial (PatPartial b (PApp _ name pats : patsLater) : patsUpper) rhs binds ->
                 let
                   -- * 這行把記在 conMap 中， name 的 index 拿出來。
                   i = fst $ conMap M.! {- traceShowId -} (forgetL name)
@@ -134,7 +145,7 @@ buildReorder conMap l = sortPat 0 1
                   -- * 於是 `PApp l (QName l) [Pat l]` 代表的 data constructor and argument patterns 被放到正確的位置，
                   -- * 接在本來存下的 `[AltPartial l]` ，也就是 `os` 的後面。
                   acc' = modifyListElem acc i $ \br@(GroupConBranchBuilding l con slotNum os) ->
-                    GroupConBranchBuilding l con slotNum (os ++ [AltPartial (pats ++ patsLater) rhs binds])
+                    GroupConBranchBuilding l con slotNum (os ++ [AltPartial (PatPartial e pats : PatPartial (b+1) patsLater : patsUpper) rhs binds])
                 in
                   eatCons acc' gs
               -- * 此後不是 PApp ，先 buildBranch ，把剩下的 `[AltPartial l]` 留給下一次的 grouping 處理。
@@ -143,7 +154,7 @@ buildReorder conMap l = sortPat 0 1
             buildBranch :: FallbackGroupConBranchBuilding l -> FallbackGroupConBranch l
             buildBranch (GroupConBranchBuilding l con slotNum os) = case os of
               [] -> GroupConBranch l con e slotNum (OrderedCaseFallback l)
-              _ -> {- trace ("buildBranch " ++ show (length os)) $ -} GroupConBranch l con e slotNum (sortPat e (e+slotNum) os)
+              _ -> {- trace ("buildBranch " ++ show (length os)) $ -} GroupConBranch l con e slotNum (sortPat (e+slotNum) os)
 
             -- * 這裡的 `g:gs` 是 `grouping` 吃到的 `[AltPartial l]` 。
             -- * `gs'` 可能是 `[]` 的，或是上次處理到一半，頭不是 `PParen` 或 `PApp` 的 `[AltPartial l]` 。
