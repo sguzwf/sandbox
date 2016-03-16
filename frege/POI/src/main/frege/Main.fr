@@ -1,0 +1,30 @@
+module frege.Main where
+
+data HSSFSheet = native org.apache.poi.hssf.usermodel.HSSFSheet where
+  native createRow :: Mutable s HSSFSheet -> Int -> STMutable s Row
+
+data HSSFWorkbook = native org.apache.poi.hssf.usermodel.HSSFWorkbook where
+  native new :: () -> STMutable s HSSFWorkbook
+  native createSheet :: Mutable s HSSFWorkbook -> String -> STMutable s HSSFSheet
+  native write :: MutableIO HSSFWorkbook -> OutputStream -> IO ()
+    throws IOException
+
+data Cell = native org.apache.poi.ss.usermodel.Cell where
+  native setCellValue :: Mutable s Cell -> String -> ST s ()
+
+data Row = native org.apache.poi.ss.usermodel.Row where
+  native createCell :: Mutable s Row -> Int -> STMutable s Cell
+
+pure native showThrowable toString :: Throwable -> String
+
+main _ = do
+  let filename = "out.xls"
+  workbook <- HSSFWorkbook.new ()
+  sheet <- HSSFWorkbook.createSheet workbook filename
+  row <- HSSFSheet.createRow sheet 0
+  cell <- Row.createCell row 0
+  Cell.setCellValue cell "hello, world"
+  file <- File.new filename
+  out <- FileOutputStream.new file
+  try (\book -> HSSFWorkbook.write book out) workbook
+    `catch` (\(exception :: IOException) -> println $ showThrowable exception)
