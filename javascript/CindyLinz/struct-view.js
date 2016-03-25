@@ -115,6 +115,44 @@ var newEllipse = function(x, y, w, h, p, opts) {
   return box;
 };
 
+// 5 //
+var sqr = function(x){ return x*x };
+
+var newLink = function(a, b, opts){
+  var dis = 1e9, dis2;
+  var i, j;
+  var i0, j0;
+  // XXX: find the nearest pairs to link
+  for(i=0; i<a.link.length; ++i)
+    for(j=0; j<b.link.length; ++j) {
+      dis2 = Math.sqrt(sqr(a.link[i].x-b.link[j].x) + sqr(a.link[i].y-b.link[j].y)) + a.link[i].d + b.link[j].d;
+      if( dis2 < dis ){
+        i0 = i;
+        j0 = j;
+        dis = dis2;
+      }
+    }
+  var dom = newNode('line');
+  dom.setAttribute('x1', a.link[i0].x);
+  dom.setAttribute('y1', a.link[i0].y);
+  dom.setAttribute('x2', b.link[j0].x);
+  dom.setAttribute('y2', b.link[j0].y);
+  if( !opts )
+    opts = {};
+  dom.setAttribute('stroke', opts.stroke || '#000');
+  dom.setAttribute('storke-width', opts.strokeWidth || 2);
+
+  var box = {};
+  box.dom = dom;
+
+  svg.appendChild(dom);
+
+  return box;
+};
+
+//newBox(10, 10, 100, 100, root, {text: 'Hi'});
+//newBox2(10, 130, 100, 100, root, {text1: 'A', text2: 'B'});
+//newEllipse(250, 10, 200, 100, root, {text: 'ell'});
 var world = newBox(450, 10, 100, 590, 1, root, {text: ['real world']});
 var i;
 var tvarValues = [1,3,'a',-4,2,'xx',3.5];
@@ -142,3 +180,22 @@ var trec3 = newBox(850, 250, 100, 300, 1, root, {text: ['TRec 3']});
 // XXX: the type of text is changed from [String] to String =_=
 var inv1 = newEllipse(750, 100, 80, 40, root, {text: 'inv 1'});
 var inv2 = newEllipse(10, 50, 80, 40, trec3, {text: 'inv 2'});
+
+var inv1trec = newBox(600, 120, 100, 40, 1, root, {text: ['TRec inv 1']});
+newLink(inv1, inv1trec);
+
+var inv2trec = newBox(700, 320, 100, 40, 1, root, {text: ['TRec inv 2']});
+newLink(inv2, inv2trec);
+
+newLink(trec2_1, trec2_2);
+newLink(tvars[0], entries1[0]);
+newLink(tvars[1], entries2_1[0]);
+newLink(tvars[2], entries2_1[1]);
+newLink(tvars[2], entries2_2[0]);
+
+newLink(inv1trec, tvars[1]);
+newLink(inv1trec, tvars[2]);
+
+newLink(inv2trec, tvars[2]);
+newLink(inv2trec, tvars[4]);
+newLink(inv2trec, tvars[5]);
