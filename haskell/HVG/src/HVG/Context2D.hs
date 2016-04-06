@@ -81,7 +81,7 @@ fillStyle :: String -> IO ()
 fillStyle val = putStrLn $ "ctx.fillStyle = " ++ show val ++ ";"
 
 strokeStyle :: String -> IO ()
-storkeStyle val = putStrLn $ "ctx.strokeStyle = " ++ show val ++ ";"
+strokeStyle val = putStrLn $ "ctx.strokeStyle = " ++ show val ++ ";"
 
 
 clearRect :: Point -> Size -> IO ()
@@ -90,11 +90,11 @@ clearRect (Point x y) (Size w h) =
 
 fillRect :: Point -> Size -> IO ()
 fillRect (Point x y) (Size w h) =
-  putStrLn $ "ctx.fillRect(" ++ show x ++ "," ++ show y ++ "," ++ show w ++ "," ++ show h + ");"
+  putStrLn $ "ctx.fillRect(" ++ show x ++ "," ++ show y ++ "," ++ show w ++ "," ++ show h ++ ");"
 
 strokeRect :: Point -> Size -> IO ()
 strokeRect (Point x y) (Size w h) =
-  putStrLn $ "ctx.strokeRect(" ++ show x "," ++ show y ++ "," ++ show w ++ "," ++ show h ++ ");"
+  putStrLn $ "ctx.strokeRect(" ++ show x ++ "," ++ show y ++ "," ++ show w ++ "," ++ show h ++ ");"
 
 
 fillText :: String -> Point -> Maybe Double -> IO ()
