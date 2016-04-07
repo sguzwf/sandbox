@@ -150,34 +150,34 @@ initBuilderState = BuilderState
   , bldDraw = return ()
   }
 
-data Builder a = Builder (BuilderState -> ContextState -> (BuilderState, ContextState, a))
-data ContextedBuilder a = ContextedBuilder (BuilderState -> (BuilderState, ContextState, a))
+data Builder a = Builder (ContextState -> BuilderState -> (ContextState, BuilderState, a))
+data ContextedBuilder a = ContextedBuilder (BuilderState -> (ContextState, BuilderState, a))
 
 instance Functor Builder where
-  fmap f (Builder act) = Builder $ \bld ctx ->
+  fmap f (Builder act) = Builder $ \ctx bld ->
     let
-      (bld', ctx', a) = act bld ctx
+      (ctx', bld', a) = act ctx bld
     in
-      (bld', ctx', f a)
+      (ctx', bld', f a)
 
 instance Applicative Builder where
-  pure a = Builder $ \bld ctx -> (bld, ctx, a)
-  Builder fAct <*> Builder aAct = Builder $ \bld ctx ->
+  pure a = Builder $ \ctx bld -> (ctx, bld, a)
+  Builder fAct <*> Builder aAct = Builder $ \ctx bld ->
     let
-      (bld', ctx', f) = fAct bld ctx
-      (bld'', ctx'', a) = aAct bld' ctx'
+      (ctx', bld', f) = fAct ctx bld
+      (ctx'', bld'', a) = aAct ctx' bld'
     in
-      (bld'', ctx'', f a)
+      (ctx'', bld'', f a)
 
 instance Monad Builder where
-  Builder mAct >>= f = Builder $ \bld ctx ->
+  Builder mAct >>= f = Builder $ \ctx bld ->
     let
-      (bld', ctx', a) = mAct bld ctx
+      (ctx', bld', a) = mAct ctx bld
       Builder fAct = f a
     in
       -- XXX: `f a` 的結果， `Builder fAct` 中也有一個 context 吧？
       --      它是 `bld ctx` 還是 `bld' ctx'` ？或者都不是？
-      fAct bld' ctx'
+      fAct ctx' bld'
 
 data Matrix = Matrix
   Double Double Double
