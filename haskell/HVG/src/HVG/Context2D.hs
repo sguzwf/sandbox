@@ -37,7 +37,7 @@ textAlign :: TextAlign -> IO ()
 textAlign val = putStrLn $ "ctx.textAlign = " ++ show (strValue val) ++ ";"
 
 textBaseline :: TextBaseline -> IO ()
-textBaseline val = putStr $ "ctx.textBaseline = " ++ show (strValue val) ++ ");"
+textBaseline val = putStrLn $ "ctx.textBaseline = " ++ show (strValue val) ++ ";"
 
 
 moveTo :: Point -> IO ()

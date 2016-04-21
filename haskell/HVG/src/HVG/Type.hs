@@ -271,7 +271,7 @@ data Point = Point Double Double deriving Show
 data Size = Size Double Double deriving Show
 
 data LinkPoint = LinkPoint Point Cost deriving Show
-data Cost = Double deriving Show
+type Cost = Double
 
 pointDistance :: Point -> Point -> Double
 pointDistance (Point x1 y1) (Point x2 y2) = sqrt ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
