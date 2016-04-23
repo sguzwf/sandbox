@@ -314,4 +314,182 @@ el.innerHtml = string;
 
 
 
-// to be continued...?
+// Set Style - IE8+
+el.style.borderWidth = '20px';
+
+
+
+// Set Text - IE9+
+el.textContent = string;
+
+
+
+// Siblings - IE9+
+Array.prototype.filter.call(el.parentNode.children, function(child) {
+  return child !== el;
+});
+
+
+
+// Toggle Class - IE9+
+if( el.classList )
+  el.classList.toggle(className);
+else {
+  var classes = el.className.split(' ');
+  var existingIndex = classes.indexOf(className);
+
+  if( existingIndex >= 0 )
+    class.splice(existingIndex, 1);
+  else
+    classes.push(className);
+
+  el.className = classes.join(' ');
+}
+
+
+
+/******************************
+ * Events
+ ******************************/
+
+// Off - IE9+
+el.removeEventListener(eventName, eventHandler);
+
+
+
+// On - IE9+
+el.addEventListener(eventName, eventHandler);
+
+
+
+// Ready - IE9+
+function ready(fn) {
+  if( document.readyState != 'loading' )
+    fn();
+  else
+    document.addEventListener('DOMContentLoaded', fn);
+}
+
+
+
+// Trigger Custom - IE9+
+if( window.CustomEvent )
+  var event = new CustomEvent('my-event', {detail: {some: 'data'}});
+else {
+  var event = document.createEvent('CustomEvent');
+  event.initEvent('my-event', true, true, {some: 'data'});
+}
+
+el.dispatchEvent(event);
+
+
+
+// Trigger Native - IE9+
+var event = document.createEvent('HTMLEvents');
+event.initEvent('change', true, false);
+el.dispatchEvent(event);
+
+
+
+/******************************
+ * Utils
+ ******************************/
+
+// Bind - IE9+
+fn.bind(context);
+
+
+
+// Array Each - IE9+
+array.forEach(function(item, i) {
+});
+
+
+
+// Deep Extend - IE6+
+var deepExtend = function(out) {
+  out = out || {};
+
+  for (var i = 1; i < arguments.length; ++i) {
+    var obj = arguments[i];
+
+    if( !obj )
+      continue;
+
+    for (var key in obj)
+      if( obj.hasOwnProperty(key) )
+        if( typeof obj[key] === 'object' )
+          out[key] = deepExtend(out[key], obj[key]);
+        else
+          out[key] = obj[key];
+  }
+
+  return out;
+};
+
+deepExpend({}, objA, objB);
+
+
+
+// Extend - IE8+
+var extend = function(out) {
+  out = out || {};
+
+  for (var i = 1; i < arguments.length; ++i) {
+    if( !arguments[i] )
+      continue;
+
+    for (var key in arguments[i])
+      if( arguments[i].hasOwnProperty(key) )
+        out[key] = arguments[i][key];
+  }
+
+  return out;
+};
+
+
+
+// Index Of - IE9+
+array.indexOf(item);
+
+
+
+// Is Array - IE9+
+Array.isArray(arr);
+
+
+
+// Map - IE9+
+array.map(function(value, index) {
+});
+
+
+
+// Now - IE9+
+Date.now();
+
+
+
+// Parse HTML - IE9+
+var parseHTML = function(str) {
+  var tmp = document.implementation.createHTMLDocument();
+  tmp.body.innerHTML = str;
+  return tmp.body.children;
+};
+
+parseHTML(htmlString);
+
+
+
+// Parse Json - IE8+
+JSON.parse(string);
+
+
+
+// Trim - IE9+
+string.trim();
+
+
+
+// Type - IE8+
+Object.prototype.toString.call(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
