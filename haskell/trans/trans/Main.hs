@@ -13,6 +13,7 @@ import RuntimeSource
 import CollectData
 import ForgetL
 import Opt
+import Parse
 
 import Desugar.If
 import Desugar.List
@@ -249,6 +250,19 @@ desugarModule dataShapes = deCaseReorderModule dataShapes . deIfModule . deListM
 
 main = do
   Options{..} <- getOpts
+  inputStr <- getContents
+  res <- getAllModules inputStr
+
+  case res of
+
+    ParseOk allMods ->
+      prettyPrintAllModules allMods
+
+    ParseFailed loc msg ->
+
+      putStrLn $ msg ++ " at " ++ show loc
+
+  {-
   interact $ \inputStr ->
     case parseModuleWithMode (myParseMode "mySource.hs") inputStr of
       ParseFailed loc msg -> "parse failed at " ++ show loc ++ ": " ++ msg
@@ -283,3 +297,4 @@ main = do
                 -- * 新的 dusugarModule 中的 deCaseReorderModule 要知道 collectData 蒐集來的資料才能工作。
                 -- * 在 DeCaseReorder.hs 中看到的 a1 都是 CollectDataResult 。
                 genInit ++ genPreludeNative ++ transModule desugarredPrelude ++ transModule desugarredMain ++ genRun
+  -}
